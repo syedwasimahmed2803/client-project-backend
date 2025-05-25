@@ -1,0 +1,22 @@
+databases:
+  - name: client-project-db
+    engine: mongodb
+    version: 6
+    region: oregon
+    plan: starter
+
+services:
+  - type: web
+    name: client-project-backend
+    env: node
+    region: oregon
+    branch: main
+    buildCommand: npm install
+    startCommand: node src/index.js
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: mongodb+srv://syedwasimahmed2803:securePassword123@foodcluster.xxz04m0.mongodb.net/?retryWrites=true&w=majority&appName=FoodCLuster
+        fromDatabase:
+          name: client-project-db
+    autoDeploy: true

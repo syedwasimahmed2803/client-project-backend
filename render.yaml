@@ -1,22 +1,79 @@
-databases:
-  - name: client-project-db
-    engine: mongodb
-    version: 6
-    region: oregon
-    plan: starter
-
 services:
   - type: web
-    name: client-project-backend
-    env: node
-    region: oregon
-    branch: main
+    name: my-node-app]
+    runtime: node
     buildCommand: npm install
-    startCommand: node src/index.js
+    startCommand: npm start
     envVars:
-      - key: PORT
-        value: "3000"
+      - key: NODE_ENV
+        value: production
       - key: MONGODB_URI
         fromDatabase:
-          name: client-project-db
+          name: my-mongodb
+          property: connectionString
+      # Alternative: External MongoDB (MongoDB Atlas, etc.)
+      # - key: MONGODB_URI
+      #   value: mongodb+srv://username:password@cluster.mongodb.net/database
+      # Or use environment variable from Render dashboard:
+      # - key: MONGODB_URI
+      #   sync: false  # Set this in Render dashboard
+    # Uncomment and modify the following if you need a custom Node version
+    # runtime: node
+    # buildCommand: npm ci
+    
+    # Health check endpoint (optional)
+    # healthCheckPath: /health
+    
+    # Auto-deploy settings
     autoDeploy: true
+    
+    # Resource allocation (optional - defaults to starter)
+    # plan: starter # Options: starter, standard, pro
+    
+    # Custom domains (optional)
+    # domains:
+    #   - mydomain.com
+    #   - www.mydomain.com
+
+# Database configuration
+databases:
+  - name: my-mongodb
+    databaseName: myapp
+    user: myapp_user
+    # For MongoDB, you'll typically use an external service like MongoDB Atlas
+    # Render doesn't provide managed MongoDB, so consider these options:
+    
+# Option 1: MongoDB Atlas (Recommended)
+# Set MONGODB_URI in Render dashboard to your Atlas connection string
+# mongodb+srv://<username>:<password>@<cluster>.mongodb.net/<database>
+
+# Option 2: Self-hosted MongoDB on Render
+# - type: private-service  
+#   name: mongodb
+#   env: docker
+#   dockerfilePath: ./Dockerfile.mongo
+#   disk:
+#     name: mongodb-data
+#     mountPath: /data/db
+#     sizeGB: 10
+
+# Uncomment if you need PostgreSQL instead
+# databases:
+#   - name: my-postgres-db
+#     databaseName: myapp
+#     user: myapp_user
+
+# Uncomment if you need Redis
+# - type: redis
+#   name: my-redis
+#   ipAllowList: [] # Empty array allows all IPs
+
+# Uncomment if you need background workers
+# - type: worker
+#   name: my-worker
+#   env: node
+#   buildCommand: npm install
+#   startCommand: npm run worker
+#   envVars:
+#     - key: NODE_ENV
+#       value: production

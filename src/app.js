@@ -1,4 +1,3 @@
-// src/app.js
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
@@ -8,7 +7,9 @@ const router = require('./routes/router');
 const app = express();
 app.use(cors());
 app.use(express.json());
-app.use(router);
+
+// Add auth & other routes
+app.use('/api', router); // Prefix all routes with /api
 
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,

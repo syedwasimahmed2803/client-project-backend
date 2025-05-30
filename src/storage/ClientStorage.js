@@ -6,9 +6,29 @@ class ClientStorage {
     return ClientModel.find().lean();
   }
 
+  static async getClientById(id) {
+    return ClientModel.findById(id).lean();
+  }
+
+  static async findClientByEmail(email) {
+    return ClientModel.findOne({ email }).lean();
+  }
+
   static async createClient(data) {
     const client = new ClientModel(data);
     return client.save();
+  }
+
+  static async updateClient(id, updateData) {
+    return ClientModel.findByIdAndUpdate(
+      id, 
+      updateData, 
+      { new: true, runValidators: true }
+    ).lean();
+  }
+
+  static async deleteClient(id) {
+    return ClientModel.findByIdAndDelete(id).lean();
   }
 }
 

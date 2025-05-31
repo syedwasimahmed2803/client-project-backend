@@ -8,7 +8,7 @@ const router = express.Router();
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
-    const result = await AuthService.login(email, password);
+    const result = await AuthService.login(email, password, req);
     res.json(result);
   } catch (err) {
     res.status(400).json({ message: err.message });

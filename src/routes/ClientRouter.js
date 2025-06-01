@@ -12,7 +12,6 @@ router.get('/', authenticate, authorizeRoles('admin', 'employee'), async (req, r
     const clients = await ClientService.getClients();
     res.json(clients);
   } catch (error) {
-    console.error(error);
     res.status(500).json({ error: 'Failed to fetch clients' });
   }
 });
@@ -23,8 +22,8 @@ router.post('/', authenticate, authorizeRoles('admin'), async (req, res) => {
     const newClient = await ClientService.addClient(req.body);
     res.status(201).json(newClient);
   } catch (error) {
-    console.error(error);
-    res.status(400).json({ error: error.message });
+     const message = parseMongoError(error);
+    res.status(400).json({ message });
   }
 });
 
@@ -37,7 +36,6 @@ router.get('/:id', authenticate, authorizeRoles('admin', 'employee'), async (req
     }
     res.json(client);
   } catch (error) {
-    console.error(error);
     res.status(500).json({ error: 'Failed to fetch client' });
   }
 });
@@ -51,8 +49,8 @@ router.put('/:id', authenticate, authorizeRoles('admin'), async (req, res) => {
     }
     res.json(updatedClient);
   } catch (error) {
-    console.error(error);
-    res.status(400).json({ error: error.message });
+  const message = parseMongoError(error);
+    res.status(400).json({ message });
   }
 });
 
@@ -65,7 +63,6 @@ router.delete('/:id', authenticate, authorizeRoles('admin'), async (req, res) =>
     }
     res.json({ message: 'Client deleted successfully' });
   } catch (error) {
-    console.error(error);
     res.status(500).json({ error: 'Failed to delete client' });
   }
 });

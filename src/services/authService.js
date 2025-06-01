@@ -20,7 +20,7 @@ const AuthService = {
       throw new Error('Unauthorized User');
     }
     const hashedPassword = await bcrypt.hash(employeeData.password, 10);
-    const employee = await UserStorage.createUser({ ...employeeData, password: hashedPassword, role: 'employee' });
+    const employee = await UserStorage.createUser({ ...employeeData, password: hashedPassword });
     return employee;
   }
 };

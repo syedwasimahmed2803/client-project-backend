@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const logIssue = require('../utils/Logger');
 const UserStorage = require('../storage/UserStorage');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'secret123';
@@ -13,6 +14,9 @@ const authenticate = async (req, res, next) => {
     if (!req.user) throw new Error('User not found');
     const currentIP = req.ip || req.connection.remoteAddress;
     if (decoded.loginIP !== currentIP) {
+      await logIssue('Token used from unauthorized IP', req.ip, {
+        currentIP
+      });
       return res.status(403).json({ message: 'Unauthorized IP' });
     }
     next();

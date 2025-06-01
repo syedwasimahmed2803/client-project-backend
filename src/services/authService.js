@@ -17,7 +17,7 @@ const AuthService = {
 
   registerEmployee: async (adminUser, employeeData) => {
     if (adminUser.role !== 'admin') {
-      throw new Error('Unauthorized');
+      throw new Error('Unauthorized User');
     }
     const hashedPassword = await bcrypt.hash(employeeData.password, 10);
     const employee = await UserStorage.createUser({ ...employeeData, password: hashedPassword, role: 'employee' });

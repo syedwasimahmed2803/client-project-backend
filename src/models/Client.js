@@ -18,7 +18,7 @@ const ClientSchema = new mongoose.Schema({
     }
   },
   region:  { type: String },
-  careFee: { type: Number },
+  caseFee: { type: Number },
   status: { type: String, enum: ['active', 'inactive'], default: 'active' }
 }, { timestamps: true });
 

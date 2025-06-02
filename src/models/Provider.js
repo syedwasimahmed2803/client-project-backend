@@ -1,7 +1,7 @@
-// src/models/Hospital.js
+// src/models/Provider.js
 const mongoose = require('mongoose');
 
-const HospitalSchema = new mongoose.Schema({
+const ProviderSchema = new mongoose.Schema({
   name: { type: String, required: true },
   location: { type: String },
   region: { type: String },
@@ -20,9 +20,9 @@ const HospitalSchema = new mongoose.Schema({
     }
   },
   caseFee: { type: Number },
-  status: { type: String, enum: ['cash', 'cashless'], default: 'cash' }
+  status: { type: String, enum: ['inactive', 'active'], default: 'active' }
 }, { timestamps: true });
 
-const Hospital = mongoose.model('Hospital', HospitalSchema);
+const Provider = mongoose.model('Provider', ProviderSchema);
 
-module.exports = Hospital;
+module.exports = Provider;

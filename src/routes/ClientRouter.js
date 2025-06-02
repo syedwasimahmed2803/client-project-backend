@@ -4,6 +4,7 @@ const router = express.Router();
 const ClientService = require('../services/ClientService');
 const authenticate = require('../middlewares/Auth');
 const authorizeRoles = require('../middlewares/RBAC');
+const parseMongoError = require('../utils/Error')
 
 // GET /clients - Only authenticated users can view clients
 // Both admin and employee can view clients
@@ -24,19 +25,6 @@ router.post('/', authenticate, authorizeRoles('admin', 'employee'), async (req, 
   } catch (error) {
      const message = parseMongoError(error);
     res.status(400).json({ message });
-  }
-});
-
-// GET /clients/:id - Get specific client (admin and employee)
-router.get('/:id', authenticate, authorizeRoles('admin', 'employee'), async (req, res) => {
-  try {
-    const client = await ClientService.getClientById(req.params.id);
-    if (!client) {
-      return res.status(404).json({ error: 'Client not found' });
-    }
-    res.json(client);
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch client' });
   }
 });
 

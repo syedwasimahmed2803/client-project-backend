@@ -6,18 +6,14 @@ class ClientService {
     return ClientStorage.getAllClients();
   }
 
-  static async getClientById(id) {
-    return ClientStorage.getClientById(id);
-  }
-
   static async addClient(clientData) {
     // Add validation here if needed
     if (!clientData.name) {
       throw new Error('Name is required');
     }
     
-    // Check if client with email already exists
-    const existingClient = await ClientStorage.findClientByEmail(clientData.name);
+    // Check if client with name already exists
+    const existingClient = await ClientStorage.findClientByName(clientData.name);
     if (existingClient) {
       throw new Error('Client with this name already exists');
     }

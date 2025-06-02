@@ -10,8 +10,8 @@ class ClientStorage {
     return ClientModel.findById(id).lean();
   }
 
-  static async findClientByEmail(email) {
-    return ClientModel.findOne({ email }).lean();
+  static async findClientByName(name) {
+    return ClientModel.findOne({ name }).lean();
   }
 
   static async createClient(data) {

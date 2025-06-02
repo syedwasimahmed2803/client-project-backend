@@ -17,7 +17,7 @@ router.get('/', authenticate, authorizeRoles('admin', 'employee'), async (req, r
 });
 
 // POST /clients - Only admin can create new clients
-router.post('/', authenticate, authorizeRoles('admin'), async (req, res) => {
+router.post('/', authenticate, authorizeRoles('admin', 'employee'), async (req, res) => {
   try {
     const newClient = await ClientService.addClient(req.body);
     res.status(201).json(newClient);
@@ -41,7 +41,7 @@ router.get('/:id', authenticate, authorizeRoles('admin', 'employee'), async (req
 });
 
 // PUT /clients/:id - Update client (only admin)
-router.put('/:id', authenticate, authorizeRoles('admin'), async (req, res) => {
+router.put('/:id', authenticate, authorizeRoles('admin', 'employee'), async (req, res) => {
   try {
     const updatedClient = await ClientService.updateClient(req.params.id, req.body);
     if (!updatedClient) {

@@ -5,7 +5,7 @@ const ClientSchema = new mongoose.Schema({
   name: { type: String, required: true },
   contacts: {
     primary: {
-      name:        { type: String, required: true },
+      name:        { type: String, required: true, unique: true },
       email:       { type: String, required: true },
       designation: { type: String },
       phone:       { type: String }

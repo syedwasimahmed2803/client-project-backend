@@ -1,9 +1,18 @@
 // src/storage/ProviderStorage.js
 const ProviderModel = require('../models/Provider');
+const CaseStorage = require('./CaseStorage')
 
 class ProviderStorage {
   static async getAllProviders() {
-    return ProviderModel.find().lean();
+      const providers = await ProviderModel.find().lean();
+    const providerIds = providers.map(provider => provider._id);
+
+    const activeCaseMap = await CaseStorage.getActiveCasesCountForEntities('Provider', providerIds);
+
+    return providers.map(providers => ({
+      ...providers,
+      activeCases: activeCaseMap[providers._id] || 0,
+    }));
   }
 
   static async getProviderById(id) {

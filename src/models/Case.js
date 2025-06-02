@@ -6,17 +6,21 @@ const CaseSchema = new Schema({
   patientName: { type: String, required: true },
   companyName: { type: String },
   insuranceReference: { type: String },
-  insuranceName: { type: String },
-  insuranceId: {type: Types.ObjectId, required: true },
-  insuranceType: { type: String, enum: ['provider', 'client'], required: true },
-  hospital: { type: String, ref: 'Hospital', required: true },
+  insurance: { type: String },
+  insuranceType: { type: String, enum: ['Provider', 'Client'], required: true },
+  insuranceId: { type: Types.ObjectId, required: true, refPath: 'insuranceType' },
+  hospital: { type: String, required: true },
   hospitalId: { type: Types.ObjectId, ref: 'Hospital', required: true },
   assistanceDate: { type: Date },
   serviceType: { type: String },
+  remarks: { type: String },
   invoiceStatus: { type: String, enum: ['completed', 'pending'], default: 'pending' },
   mrStatus: { type: String, enum: ['completed', 'pending'], default: 'pending' },
   remarks: { type: String },
-  hospitalAmount: { type: Number }
+  region: { type: String },
+  status: { type: String, enum: ['open', 'close'], default: 'open' },
 }, { timestamps: true });
 
-module.exports = mongoose.model('Case', CaseSchema);
+const Case = mongoose.model('Case', CaseSchema);
+
+module.exports = Case;

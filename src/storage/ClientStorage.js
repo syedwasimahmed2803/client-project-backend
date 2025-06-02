@@ -1,9 +1,17 @@
 // src/storage/ClientStorage.js
 const ClientModel = require('../models/Client');
-
+const CaseStorage = require('./CaseStorage')
 class ClientStorage {
   static async getAllClients() {
-    return ClientModel.find().lean();
+    const clients = await ClientModel.find().lean();
+    const clientIds = clients.map(client => client._id);
+
+    const activeCaseMap = await CaseStorage.getActiveCasesCountForEntities('Client', clientIds);
+
+    return clients.map(client => ({
+      ...client,
+      activeCases: activeCaseMap[client._id] || 0,
+    }));
   }
 
   static async getClientById(id) {

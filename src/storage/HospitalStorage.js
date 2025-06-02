@@ -1,9 +1,18 @@
 // src/storage/HospitalStorage.js
 const HospitalModel = require('../models/Hospital');
+const CaseStorage = require('./CaseStorage')
 
 class HospitalStorage {
   static async getAllHospitals() {
-    return HospitalModel.find().lean();
+    const hospitals = await HospitalModel.find().lean();
+    const hospitalIds = hospitals.map(hospital => hospital._id);
+
+    const activeCaseMap = await CaseStorage.getActiveCasesCountForEntities('Hospital', hospitalIds);
+
+    return hospitals.map(hospital => ({
+      ...hospital,
+      activeCases: activeCaseMap[hospital._id] || 0,
+    }));
   }
 
   static async getHospitalById(id) {

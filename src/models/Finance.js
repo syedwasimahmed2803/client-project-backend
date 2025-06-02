@@ -3,7 +3,7 @@ const { Schema, Types } = mongoose;
 
 const FinanceSchema = new Schema({
   case: { type: Types.ObjectId, ref: 'Case', required: true, unique: true },
-  client: { type: Types.ObjectId, ref: 'Client', required: true },
+  client: { type: String, ref: 'Client', required: true },
   patientName: { type: String },
   hospitalAmount: { type: Number },
   clientFee: { type: Number },

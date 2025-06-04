@@ -3,8 +3,83 @@ const router = express.Router();
 const CaseService = require('../services/CaseService');
 const authenticate = require('../middlewares/Auth');
 const authorizeRoles = require('../middlewares/RBAC');
-const parseMongoError = require('../utils/Error')
+const parseMongoError = require('../utils/Error');
 
+/**
+ * @swagger
+ * tags:
+ *   name: Cases
+ *   description: Case management endpoints
+ */
+
+/**
+ * @swagger
+ * /cases:
+ *   get:
+ *     summary: Get all cases
+ *     tags: [Cases]
+ *     parameters:
+ *       - $ref: '#/components/parameters/XForwardedFor'
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of all cases
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   _id:
+ *                     type: string
+ *                   refNumber:
+ *                     type: string
+ *                   patientName:
+ *                     type: string
+ *                   companyName:
+ *                     type: string
+ *                   insuranceReference:
+ *                     type: string
+ *                   insurance:
+ *                     type: string
+ *                   insuranceType:
+ *                     type: string
+ *                     enum: [Provider, Client]
+ *                   insuranceId:
+ *                     type: string
+ *                   hospital:
+ *                     type: string
+ *                   hospitalId:
+ *                     type: string
+ *                   assistanceDate:
+ *                     type: string
+ *                     format: date-time
+ *                   serviceType:
+ *                     type: string
+ *                   remarks:
+ *                     type: string
+ *                   invoiceStatus:
+ *                     type: string
+ *                     enum: [completed, pending]
+ *                   mrStatus:
+ *                     type: string
+ *                     enum: [completed, pending]
+ *                   region:
+ *                     type: string
+ *                   status:
+ *                     type: string
+ *                     enum: [open, close]
+ *                   createdAt:
+ *                     type: string
+ *                     format: date-time
+ *                   updatedAt:
+ *                     type: string
+ *                     format: date-time
+ *       500:
+ *         description: Failed to fetch cases
+ */
 router.get('/', authenticate, authorizeRoles('admin', 'employee'), async (req, res) => {
   try {
     const cases = await CaseService.getCases();
@@ -14,6 +89,123 @@ router.get('/', authenticate, authorizeRoles('admin', 'employee'), async (req, r
   }
 });
 
+/**
+ * @swagger
+ * /cases:
+ *   post:
+ *     summary: Create a new case
+ *     tags: [Cases]
+ *     parameters:
+ *       - $ref: '#/components/parameters/XForwardedFor'
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - refNumber
+ *               - patientName
+ *               - insuranceType
+ *               - insuranceId
+ *               - hospital
+ *               - hospitalId
+ *             properties:
+ *               refNumber:
+ *                 type: string
+ *               patientName:
+ *                 type: string
+ *               companyName:
+ *                 type: string
+ *               insuranceReference:
+ *                 type: string
+ *               insurance:
+ *                 type: string
+ *               insuranceType:
+ *                 type: string
+ *                 enum: [Provider, Client]
+ *               insuranceId:
+ *                 type: string
+ *               hospital:
+ *                 type: string
+ *               hospitalId:
+ *                 type: string
+ *               assistanceDate:
+ *                 type: string
+ *                 format: date-time
+ *               serviceType:
+ *                 type: string
+ *               remarks:
+ *                 type: string
+ *               invoiceStatus:
+ *                 type: string
+ *                 enum: [completed, pending]
+ *               mrStatus:
+ *                 type: string
+ *                 enum: [completed, pending]
+ *               region:
+ *                 type: string
+ *               status:
+ *                 type: string
+ *                 enum: [open, close]
+ *     responses:
+ *       201:
+ *         description: Case created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 _id:
+ *                   type: string
+ *                 refNumber:
+ *                   type: string
+ *                 patientName:
+ *                   type: string
+ *                 companyName:
+ *                   type: string
+ *                 insuranceReference:
+ *                   type: string
+ *                 insurance:
+ *                   type: string
+ *                 insuranceType:
+ *                   type: string
+ *                   enum: [Provider, Client]
+ *                 insuranceId:
+ *                   type: string
+ *                 hospital:
+ *                   type: string
+ *                 hospitalId:
+ *                   type: string
+ *                 assistanceDate:
+ *                   type: string
+ *                   format: date-time
+ *                 serviceType:
+ *                   type: string
+ *                 remarks:
+ *                   type: string
+ *                 invoiceStatus:
+ *                   type: string
+ *                   enum: [completed, pending]
+ *                 mrStatus:
+ *                   type: string
+ *                   enum: [completed, pending]
+ *                 region:
+ *                   type: string
+ *                 status:
+ *                   type: string
+ *                   enum: [open, close]
+ *                 createdAt:
+ *                   type: string
+ *                   format: date-time
+ *                 updatedAt:
+ *                   type: string
+ *                   format: date-time
+ *       400:
+ *         description: Invalid input or duplicate case
+ */
 router.post('/', authenticate, authorizeRoles('admin', 'employee'), async (req, res) => {
   try {
     const newCase = await CaseService.addCase(req.body);
@@ -24,6 +216,124 @@ router.post('/', authenticate, authorizeRoles('admin', 'employee'), async (req, 
   }
 });
 
+/**
+ * @swagger
+ * /cases/{id}:
+ *   put:
+ *     summary: Update an existing case
+ *     tags: [Cases]
+ *     parameters:
+ *       - $ref: '#/components/parameters/XForwardedFor'
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Case ID
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               refNumber:
+ *                 type: string
+ *               patientName:
+ *                 type: string
+ *               companyName:
+ *                 type: string
+ *               insuranceReference:
+ *                 type: string
+ *               insurance:
+ *                 type: string
+ *               insuranceType:
+ *                 type: string
+ *                 enum: [Provider, Client]
+ *               insuranceId:
+ *                 type: string
+ *               hospital:
+ *                 type: string
+ *               hospitalId:
+ *                 type: string
+ *               assistanceDate:
+ *                 type: string
+ *                 format: date-time
+ *               serviceType:
+ *                 type: string
+ *               remarks:
+ *                 type: string
+ *               invoiceStatus:
+ *                 type: string
+ *                 enum: [completed, pending]
+ *               mrStatus:
+ *                 type: string
+ *                 enum: [completed, pending]
+ *               region:
+ *                 type: string
+ *               status:
+ *                 type: string
+ *                 enum: [open, close]
+ *     responses:
+ *       200:
+ *         description: Case updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 _id:
+ *                   type: string
+ *                 refNumber:
+ *                   type: string
+ *                 patientName:
+ *                   type: string
+ *                 companyName:
+ *                   type: string
+ *                 insuranceReference:
+ *                   type: string
+ *                 insurance:
+ *                   type: string
+ *                 insuranceType:
+ *                   type: string
+ *                   enum: [Provider, Client]
+ *                 insuranceId:
+ *                   type: string
+ *                 hospital:
+ *                   type: string
+ *                 hospitalId:
+ *                   type: string
+ *                 assistanceDate:
+ *                   type: string
+ *                   format: date-time
+ *                 serviceType:
+ *                   type: string
+ *                 remarks:
+ *                   type: string
+ *                 invoiceStatus:
+ *                   type: string
+ *                   enum: [completed, pending]
+ *                 mrStatus:
+ *                   type: string
+ *                   enum: [completed, pending]
+ *                 region:
+ *                   type: string
+ *                 status:
+ *                   type: string
+ *                   enum: [open, close]
+ *                 createdAt:
+ *                   type: string
+ *                   format: date-time
+ *                 updatedAt:
+ *                   type: string
+ *                   format: date-time
+ *       404:
+ *         description: Case not found
+ *       400:
+ *         description: Invalid input
+ */
 router.put('/:id', authenticate, authorizeRoles('admin', 'employee'), async (req, res) => {
   try {
     const updated = await CaseService.updateCase(req.params.id, req.body);
@@ -37,6 +347,28 @@ router.put('/:id', authenticate, authorizeRoles('admin', 'employee'), async (req
   }
 });
 
+/**
+ * @swagger
+ * /cases/{id}:
+ *   delete:
+ *     summary: Delete a case by ID (admin only)
+ *     tags: [Cases]
+ *     parameters:
+ *       - $ref: '#/components/parameters/XForwardedFor'
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Case ID
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Case deleted successfully
+ *       404:
+ *         description: Case not found
+ */
 router.delete('/:id', authenticate, authorizeRoles('admin'), async (req, res) => {
   try {
     const deleted = await CaseService.deleteCase(req.params.id);

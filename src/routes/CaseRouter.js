@@ -381,4 +381,62 @@ router.delete('/:id', authenticate, authorizeRoles('admin'), async (req, res) =>
   }
 });
 
+/**
+ * @swagger
+ * /cases/{caseId}/close:
+ *   put:
+ *     summary: Close a case and create a corresponding finance entry
+ *     tags:
+ *       - Cases
+ *     parameters:
+ *       - $ref: '#/components/parameters/XForwardedFor'
+ *       - in: path
+ *         name: caseId
+ *         required: true
+ *         description: MongoDB ObjectId of the case to be closed
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - remark
+ *             properties:
+ *               remark:
+ *                 type: string
+ *                 description: Remark to be added when closing the case
+ *     responses:
+ *       200:
+ *         description: Case successfully closed and finance entry created
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *       404:
+ *         description: Case not found
+ *       500:
+ *         description: Server error
+ */
+
+// PUT /cases/:caseId/close
+router.put('/:id/close', authenticate, authorizeRoles('admin', 'employee'), async (req, res) => {
+  const { id } = req.params;
+  const { remark } = req.body;
+
+  try {
+    const closedCase = await CaseService.closeCase(id, remark);
+    res.status(200).json(closedCase);
+  } catch (error) {
+    const message = parseMongoError(error);
+    res.status(400).json({ message });
+  }
+});
+
+
 module.exports = router;

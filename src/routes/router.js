@@ -7,7 +7,9 @@ const HospitalRouter = require('./HospitalRouter');
 const ProviderRouter = require('./ProviderRouter');
 const AuthRouter = require('./AuthRouter'); 
 const CaseRouter = require('./CaseRouter');
+const FinanceRouter = require('./FinanceRouter');
 
+router.use('/finances', FinanceRouter);
 router.use('/cases', CaseRouter);
 router.use('/clients', ClientRouter);
 router.use('/providers', ProviderRouter);

@@ -18,6 +18,15 @@ class UtilityService {
     };
   }
 
+  static async getInsurerByType(id, type) {
+    if(type === "Provider"){
+      return await ProviderStorage.getProviderById(id)
+    }
+    if(type === "Client"){
+      return await ClientStorage.getClientById(id)
+    }
+  }
+
 }
 
 module.exports = UtilityService;

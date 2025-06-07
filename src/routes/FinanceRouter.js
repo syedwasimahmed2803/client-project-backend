@@ -16,6 +16,71 @@ const FinanceService = require('../services/FinanceService');
 
 /**
  * @swagger
+ * /finances:
+ *   get:
+ *     summary: Get all finances
+ *     tags: [Finance]
+ *     parameters:
+ *       - $ref: '#/components/parameters/XForwardedFor'
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of all finances
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   caseId:
+ *                     type: string
+ *                   clientId:
+ *                     type: string
+ *                   patientName:
+ *                     type: string
+ *                   client:
+ *                     type: string
+ *                   hospitalAmount:
+ *                     type: string
+ *                   clientFee:
+ *                     type: string
+ *                   issueDate:
+ *                     type: string
+ *                     format: date-time
+ *                   dueDate:
+ *                     type: string
+ *                     format: date-time
+ *                   serviceType:
+ *                     type: string
+ *                   remarks:
+ *                     type: string
+ *                   region:
+ *                     type: string
+ *                   status:
+ *                     type: string
+ *                     enum: [approve, reject]
+ *                   createdAt:
+ *                     type: string
+ *                     format: date-time
+ *                   updatedAt:
+ *                     type: string
+ *                     format: date-time
+ *       500:
+ *         description: Failed to fetch finances
+ */
+router.get('/', authenticate, authorizeRoles('admin', 'employee'), async (req, res) => {
+  try {
+    const finance = await FinanceService.getFinances();
+    res.json(finance);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch finances' });
+  }
+});
+
+/**
+ * @swagger
  * /finances/{financeId}/status:
  *   put:
  *     summary: Update the status of a finance entry (approve or reject)

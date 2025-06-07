@@ -6,6 +6,10 @@ class InvoiceStorage {
     return invoice.save();
   }
 
+  static async getAllInvoices() {
+    return InvoiceModel.find().lean();
+  }
+
   static async updateInvoice(id, data) {
     return InvoiceModel.findByIdAndUpdate(id, data, { new: true, runValidators: true }).lean();
   }

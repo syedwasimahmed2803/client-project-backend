@@ -6,11 +6,15 @@ class FinanceStorage {
     return finance.save();
   }
 
-    static async getFinanceById(id) {
+  static async getAllFinances() {
+    return FinanceModel.find().lean();
+  }
+
+  static async getFinanceById(id) {
     return FinanceModel.findById(id).lean();
   }
 
-    static async deleteFinance(id) {
+  static async deleteFinance(id) {
     return FinanceModel.findByIdAndDelete(id).lean();
   }
 

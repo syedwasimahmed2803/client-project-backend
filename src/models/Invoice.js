@@ -12,4 +12,5 @@ const InvoiceSchema = new Schema({
   status: { type: String, enum: ['paid', 'pending', 'overdue'], default: 'pending' }
 }, { timestamps: true });
 
-module.exports = mongoose.model('Invoice', InvoiceSchema);
+const Invoice = mongoose.model('Invoice', InvoiceSchema);
+module.exports = Invoice;

@@ -12,7 +12,7 @@ const FinanceSchema = new Schema({
   dueDate: { type: Date },
   remarks: { type: String },
   region: { type: String },
-   country:  { type: String },
+  country: { type: String },
   status: { type: String, enum: ['approve', 'reject'], default: null },
 }, { timestamps: true });
 

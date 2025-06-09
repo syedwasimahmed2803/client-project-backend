@@ -1,15 +1,73 @@
 // src/utils/CaseUtils.js
 const CaseModel = require('../models/Case');
 const mongoose = require('mongoose');
-const ProviderModel= require('../models/Provider')
-const ClientModel= require('../models/Client')
-const HospitalModel= require('../models/Hospital')
+const ProviderModel = require('../models/Provider')
+const ClientModel = require('../models/Client')
+const HospitalModel = require('../models/Hospital')
 const { Types } = mongoose;
 
 class CaseStorage {
     static async getAllCases() {
         return CaseModel.find().lean();
     }
+
+    static async getMonthlyCountsGrouped(status, groupBy, startDate, endDate) {
+        const dateField = status === 'closed' ? 'closedAt' : 'createdAt';
+
+        const match = {
+            [dateField]: { $gte: startDate, $lte: endDate }
+        };
+
+        if (status) {
+            match.status = status;
+        }
+
+        if (groupBy === 'Hospital') {
+            match.hospitalId = { $exists: true, $ne: null };
+        } else if (groupBy === 'Client') {
+            match.insuranceType = 'Client';
+            match.insuranceId = { $exists: true, $ne: null };
+        } else if (groupBy === 'Provider') {
+            match.insuranceType = 'Provider';
+            match.insuranceId = { $exists: true, $ne: null };
+        }
+
+        const result = await CaseModel.aggregate([
+            { $match: match },
+            {
+                $group: {
+                    _id: {
+                        year: { $year: `$${dateField}` },
+                        month: { $month: `$${dateField}` }
+                    },
+                    count: { $sum: 1 }
+                }
+            },
+            { $sort: { '_id.year': 1, '_id.month': 1 } }
+        ]);
+
+        // Build the complete list of months between startDate and endDate
+        const monthKeys = [];
+        const current = new Date(startDate);
+        current.setDate(1); // ensure start at beginning of month
+
+        while (current <= endDate) {
+            const key = `${current.getFullYear()}-${String(current.getMonth() + 1).padStart(2, '0')}`;
+            monthKeys.push(key);
+            current.setMonth(current.getMonth() + 1);
+        }
+
+        // Map the result to month counts
+        const flatMap = {};
+        for (const { _id, count } of result) {
+            const key = `${_id.year}-${String(_id.month).padStart(2, '0')}`;
+            flatMap[key] = count;
+        }
+
+        return monthKeys.map(key => flatMap[key] || 0);
+    }
+
+
 
     static async getCaseById(id) {
         return CaseModel.findById(id).lean();

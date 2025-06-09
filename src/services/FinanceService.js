@@ -60,6 +60,7 @@ class FinanceService {
       await FinanceStorage.updateFinance(financeId, financeDoc);
 
       caseDoc.status = 'closed'
+      caseDoc.closedAt = Date.now();
       await CaseStorage.updateCase(caseDoc.id, caseDoc)
 
       return financeDoc;

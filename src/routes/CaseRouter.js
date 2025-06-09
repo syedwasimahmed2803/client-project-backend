@@ -91,6 +91,74 @@ router.get('/', authenticate, authorizeRoles('admin', 'employee'), async (req, r
 
 /**
  * @swagger
+ * /cases/monthly-entity-counts:
+ *   get:
+ *     summary: Get case counts per month for an entity for a custom date range and status
+ *     tags: [Cases]
+ *     parameters:
+ *       - $ref: '#/components/parameters/XForwardedFor'
+ *       - in: query
+ *         name: status
+ *         required: false
+ *         schema:
+ *           type: string
+ *         description: open, in-review, closed
+ *       - in: query
+ *         name: startDate
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: date-time
+ *         description: Start of the date range
+ *       - in: query
+ *         name: endDate
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: date-time
+ *         description: End of the date range
+ *       - in: query
+ *         name: entityType
+ *         required: false
+ *         schema:
+ *           type: string
+ *         description: Hospital/Client/Provider
+ *     responses:
+ *       200:
+ *         description: Monthly case counts within the date range
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: number
+ */
+router.get('/monthly-entity-counts', authenticate, authorizeRoles('admin', 'employee'), async (req, res) => {
+  try {
+    const { entityType, status, startDate, endDate } = req.query;
+
+    if (!startDate || !endDate) {
+      return res.status(400).json({ message: 'Missing date parameters' });
+    }
+
+    const counts = await CaseService.getMonthlyEntityCounts(
+      entityType,
+      status,
+      new Date(startDate),
+      new Date(endDate)
+    );
+
+    res.json(counts);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Failed to get case statistics' });
+  }
+});
+
+
+
+/**
+ * @swagger
  * /cases:
  *   post:
  *     summary: Create a new case

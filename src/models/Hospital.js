@@ -2,9 +2,10 @@
 const mongoose = require('mongoose');
 
 const HospitalSchema = new mongoose.Schema({
-  name: { type: String, required: true },
+  name: { type: String, required: true, unique: true },
   location: { type: String },
   region: { type: String },
+  country: { type: String },
   contacts: {
     primary: {
       name: { type: String },

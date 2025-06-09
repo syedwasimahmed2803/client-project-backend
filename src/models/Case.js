@@ -18,7 +18,7 @@ const CaseSchema = new Schema({
   mrStatus: { type: String, enum: ['completed', 'pending'], default: 'pending' },
   remarks: { type: String },
   region: { type: String },
-  status: { type: String, enum: ['open', 'close'], default: 'open' },
+  status: { type: String, enum: ['open', 'in review', 'closed'], default: 'open' },
 }, { timestamps: true });
 
 const Case = mongoose.model('Case', CaseSchema);

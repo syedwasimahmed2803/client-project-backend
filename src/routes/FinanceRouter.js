@@ -129,7 +129,7 @@ router.get('/', authenticate, authorizeRoles('admin', 'employee'), async (req, r
  *         description: Server error
  */
 
-router.put('/:id/status', authenticate, authorizeRoles('admin', 'employee'), async (req, res) => {
+router.put('/:id/status', authenticate, authorizeRoles('admin'), async (req, res) => {
     const { status, remark } = req.body;
     const { id } = req.params;
 

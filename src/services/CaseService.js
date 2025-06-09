@@ -24,8 +24,10 @@ class CaseService {
   }
 
   static async closeCase(caseId, remark) {
+    try{
     const caseDoc = await CaseStorage.getCaseById(caseId);
     if (!caseDoc) throw { status: 404, message: 'Case not found' };
+    if(caseDoc.status === 'closed') throw { status: 404, message: 'Case is already Closed' };
 
     const hospitalDoc = await HospitalStorage.getHospitalById(caseDoc.hospitalId);
     if (!hospitalDoc) throw { status: 404, message: 'Hospital not found' };
@@ -34,7 +36,7 @@ class CaseService {
     if (!insurerDoc) throw { status: 404, message: 'Client not found' };
 
     // Update case
-    caseDoc.status = 'close';
+    caseDoc.status = 'in review';
     caseDoc.remarks = remark ?? caseDoc.remarks;
     await CaseStorage.updateCase(caseId, caseDoc);
 
@@ -56,6 +58,9 @@ class CaseService {
     await FinanceStorage.createFinance(financeData);
 
     return caseDoc;
+  }catch(error){
+    return error;
+  }
   }
 
 }

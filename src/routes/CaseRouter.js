@@ -383,9 +383,9 @@ router.delete('/:id', authenticate, authorizeRoles('admin'), async (req, res) =>
 
 /**
  * @swagger
- * /cases/{caseId}/close:
+ * /cases/{caseId}/in-review:
  *   put:
- *     summary: Close a case and create a corresponding finance entry
+ *     summary: Move a case to in-review and create a corresponding finance entry
  *     tags:
  *       - Cases
  *     parameters:
@@ -425,7 +425,7 @@ router.delete('/:id', authenticate, authorizeRoles('admin'), async (req, res) =>
  */
 
 // PUT /cases/:caseId/close
-router.put('/:id/close', authenticate, authorizeRoles('admin', 'employee'), async (req, res) => {
+router.put('/:id/in-review', authenticate, authorizeRoles('admin', 'employee'), async (req, res) => {
   const { id } = req.params;
   const { remark } = req.body;
 

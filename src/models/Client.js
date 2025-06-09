@@ -2,7 +2,7 @@
 const mongoose = require('mongoose');
 
 const ClientSchema = new mongoose.Schema({
-  name: { type: String, required: true },
+  name: { type: String, required: true, unique: true },
   contacts: {
     primary: {
       name:        { type: String, required: true },
@@ -18,6 +18,7 @@ const ClientSchema = new mongoose.Schema({
     }
   },
   region:  { type: String },
+  country:  { type: String },
   caseFee: { type: Number },
   status: { type: String, enum: ['active', 'inactive'], default: 'active' }
 }, { timestamps: true });

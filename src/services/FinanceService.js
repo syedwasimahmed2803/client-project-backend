@@ -59,6 +59,9 @@ class FinanceService {
       financeDoc.status = 'approve';
       await FinanceStorage.updateFinance(financeId, financeDoc);
 
+      caseDoc.status = 'closed'
+      await CaseStorage.updateCase(caseDoc.id, caseDoc)
+
       return financeDoc;
     }
   }

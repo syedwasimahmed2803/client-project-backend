@@ -22,14 +22,18 @@ class CaseStorage {
             match.status = status;
         }
 
+        let groupField = '';
         if (groupBy === 'Hospital') {
-            match.hospitalId = { $exists: true, $ne: null };
+            match.hospital = { $exists: true, $ne: null };
+            groupField = '$hospital';
         } else if (groupBy === 'Client') {
             match.insuranceType = 'Client';
-            match.insuranceId = { $exists: true, $ne: null };
+            match.insurance = { $exists: true, $ne: null };
+            groupField = '$insurance';
         } else if (groupBy === 'Provider') {
             match.insuranceType = 'Provider';
-            match.insuranceId = { $exists: true, $ne: null };
+            match.insurance = { $exists: true, $ne: null };
+            groupField = '$insurance';
         }
 
         const result = await CaseModel.aggregate([
@@ -37,37 +41,47 @@ class CaseStorage {
             {
                 $group: {
                     _id: {
+                        groupName: groupField,
                         year: { $year: `$${dateField}` },
                         month: { $month: `$${dateField}` }
                     },
                     count: { $sum: 1 }
                 }
             },
-            { $sort: { '_id.year': 1, '_id.month': 1 } }
+            { $sort: { '_id.groupName': 1, '_id.year': 1, '_id.month': 1 } }
         ]);
 
-        // Build the complete list of months between startDate and endDate
+        // Step 1: Generate all month keys in range
         const monthKeys = [];
         const current = new Date(startDate);
-        current.setDate(1); // ensure start at beginning of month
-
+        current.setDate(1);
         while (current <= endDate) {
             const key = `${current.getFullYear()}-${String(current.getMonth() + 1).padStart(2, '0')}`;
             monthKeys.push(key);
             current.setMonth(current.getMonth() + 1);
         }
 
-        // Map the result to month counts
-        const flatMap = {};
+        // Step 2: Organize counts by groupName
+        const groupedCounts = {};
+
         for (const { _id, count } of result) {
-            const key = `${_id.year}-${String(_id.month).padStart(2, '0')}`;
-            flatMap[key] = count;
+            const groupName = _id.groupName;
+            const monthKey = `${_id.year}-${String(_id.month).padStart(2, '0')}`;
+
+            if (!groupedCounts[groupName]) {
+                groupedCounts[groupName] = {};
+            }
+            groupedCounts[groupName][monthKey] = count;
         }
 
-        return monthKeys.map(key => flatMap[key] || 0);
+        // Step 3: Format response: fill missing months with 0
+        const finalResult = {};
+        for (const groupName in groupedCounts) {
+            finalResult[groupName] = monthKeys.map(month => groupedCounts[groupName][month] || 0);
+        }
+
+        return finalResult;
     }
-
-
 
     static async getCaseById(id) {
         return CaseModel.findById(id).lean();

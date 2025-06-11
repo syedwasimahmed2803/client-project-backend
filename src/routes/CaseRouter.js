@@ -125,13 +125,15 @@ router.get('/', authenticate, authorizeRoles('admin', 'employee'), async (req, r
  *         description: Hospital/Client/Provider
  *     responses:
  *       200:
- *         description: Monthly case counts within the date range
+ *         description: Monthly case counts grouped by entity (e.g., hospital, client, provider)
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 type: number
+ *               type: object
+ *               additionalProperties:
+ *                 type: array
+ *                 items:
+ *                   type: number
  */
 router.get('/monthly-entity-counts', authenticate, authorizeRoles('admin', 'employee'), async (req, res) => {
   try {

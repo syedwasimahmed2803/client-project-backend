@@ -105,14 +105,14 @@ router.get('/', authenticate, authorizeRoles('admin', 'employee'), async (req, r
  *         description: open, in-review, closed
  *       - in: query
  *         name: startDate
- *         required: true
+ *         required: false
  *         schema:
  *           type: string
  *           format: date-time
  *         description: Start of the date range
  *       - in: query
  *         name: endDate
- *         required: true
+ *         required: false
  *         schema:
  *           type: string
  *           format: date-time
@@ -135,10 +135,15 @@ router.get('/', authenticate, authorizeRoles('admin', 'employee'), async (req, r
  */
 router.get('/monthly-entity-counts', authenticate, authorizeRoles('admin', 'employee'), async (req, res) => {
   try {
-    const { entityType, status, startDate, endDate } = req.query;
+    let { entityType, status, startDate, endDate } = req.query;
 
     if (!startDate || !endDate) {
-      return res.status(400).json({ message: 'Missing date parameters' });
+      const now = new Date();
+      const sixMonthsAgo = new Date();
+      sixMonthsAgo.setMonth(now.getMonth() - 6);
+
+      startDate = sixMonthsAgo.toISOString();
+      endDate = now.toISOString();
     }
 
     const counts = await CaseService.getMonthlyEntityCounts(

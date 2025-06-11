@@ -12,13 +12,13 @@ const authenticate = async (req, res, next) => {
     const decoded = jwt.verify(token, JWT_SECRET);
     req.user = await UserStorage.findById(decoded.id);
     if (!req.user) throw new Error('User not found');
-    const currentIP = req.headers['x-forwarded-for']?.split(',')[0] || req.ip;
-    if (decoded.loginIP !== currentIP) {
-      await logIssue('Token used from unauthorized IP', req.ip, {
-        currentIP
-      });
-      return res.status(403).json({ message: 'Unauthorized IP' });
-    }
+    // const currentIP = req.headers['x-forwarded-for']?.split(',')[0] || req.ip;
+    // if (decoded.loginIP !== currentIP) {
+      // await logIssue('Token used from unauthorized IP', req.ip, {
+      //   currentIP
+      // });
+      // return res.status(403).json({ message: 'Unauthorized IP' });
+    // }
     next();
   } catch (err) {
     res.status(401).json({ message: 'Invalid token' });

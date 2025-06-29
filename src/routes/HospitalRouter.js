@@ -116,10 +116,14 @@ router.get('/', authenticate, authorizeRoles('admin', 'employee'), async (req, r
  *               caseFee:
  *                 type: number
  *                 example: 1200
- *               status:
+ *               relation:
  *                 type: string
  *                 enum: [cash, cashless]
  *                 example: cash
+ *               status:
+ *                 type: string
+ *                 enum: [active, inactive]
+ *                 example: active
  *     responses:
  *       201:
  *         description: Hospital created successfully
@@ -240,10 +244,14 @@ router.post('/', authenticate, authorizeRoles('admin', 'employee'), async (req, 
  *               caseFee:
  *                 type: number
  *                 example: 1200
- *               status:
+ *               relation:
  *                 type: string
  *                 enum: [cash, cashless]
  *                 example: cash
+ *               status:
+ *                 type: string
+ *                 enum: [active, inactive]
+ *                 example: active
  *     responses:
  *       201:
  *         description: Provider created successfully

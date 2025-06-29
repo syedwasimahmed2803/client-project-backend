@@ -102,4 +102,79 @@ router.post('/register', authenticate, authorizeRoles('admin'), async (req, res)
   }
 });
 
+/**
+ * @swagger
+ * /auth/forgot-password:
+ *   post:
+ *     summary: Send a temporary password to user's email
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: employee1@example.com
+ *     responses:
+ *       200:
+ *         description: Temporary password sent to the user's email
+ *       400:
+ *         description: User not found or failed to send email
+ */
+router.post('/forgot-password', async (req, res) => {
+  try {
+    await AuthService.forgotPassword(req.body.email);
+    res.json({ message: 'Temporary password sent to your email' });
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
+/**
+ * @swagger
+ * /auth/change-password:
+ *   post:
+ *     summary: Change the user's password
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - currentPassword
+ *               - newPassword
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: employee1@example.com
+ *               currentPassword:
+ *                 type: string
+ *                 example: oldPassword123
+ *               newPassword:
+ *                 type: string
+ *                 example: newSecurePassword456
+ *     responses:
+ *       200:
+ *         description: Password changed successfully
+ *       400:
+ *         description: Invalid credentials or user not found
+ */
+router.post('/change-password', async (req, res) => {
+  try {
+    const { email, currentPassword, newPassword } = req.body;
+    await AuthService.changePassword(email, currentPassword, newPassword);
+    res.json({ message: 'Password changed successfully' });
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
 module.exports = router;

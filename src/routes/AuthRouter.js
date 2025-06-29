@@ -1,5 +1,5 @@
 const express = require('express');
-const AuthService = require('../services/authService');
+const AuthService = require('../services/AuthService');
 const authenticate = require('../middlewares/Auth');
 const authorizeRoles = require('../middlewares/RBAC');
 const parseMongoError = require('../utils/Error');

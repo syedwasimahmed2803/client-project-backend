@@ -1,3 +1,4 @@
+// src/utils/Mailer.js
 const nodemailer = require('nodemailer');
 
 const transporter = nodemailer.createTransport({

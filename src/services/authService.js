@@ -1,8 +1,9 @@
+// src/services/AuthService.js
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const UserStorage = require('../storage/UserStorage');
 const crypto = require('crypto');
-const transporter = require('../utils/mailer');
+const transporter = require('../utils/Mailer');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'secret123';
 

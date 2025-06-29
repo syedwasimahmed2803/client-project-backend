@@ -42,7 +42,7 @@ const AuthService = {
 
     const mailOptions = {
       from: `"Support" <${process.env.SMTP_USER}>`,
-      to: "syedwasimahmed2803@gmail.com",
+      to: email,
       subject: 'Temporary Password - Reset Request',
       html: `
         <p>Hello ${user.name},</p>

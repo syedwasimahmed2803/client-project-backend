@@ -16,10 +16,17 @@ const parseMongoError = require('../utils/Error');
  * @swagger
  * /cases:
  *   get:
- *     summary: Get all cases
+ *     summary: Get all cases (optionally filter by status)
  *     tags: [Cases]
  *     parameters:
  *       - $ref: '#/components/parameters/XForwardedFor'
+ *       - in: query
+ *         name: status
+ *         schema:
+ *           type: string
+ *           enum: [open, in-review, close]
+ *         required: false
+ *         description: Filter cases by status
  *     security:
  *       - bearerAuth: []
  *     responses:
@@ -80,9 +87,10 @@ const parseMongoError = require('../utils/Error');
  *       500:
  *         description: Failed to fetch cases
  */
+
 router.get('/', authenticate, authorizeRoles('admin', 'employee'), async (req, res) => {
   try {
-    const cases = await CaseService.getCases();
+    const cases = await CaseService.getCases(req.query.status);
     res.json(cases);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch cases' });

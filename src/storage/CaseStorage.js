@@ -7,8 +7,12 @@ const HospitalModel = require('../models/Hospital')
 const { Types } = mongoose;
 
 class CaseStorage {
-    static async getAllCases() {
-        return CaseModel.find().lean();
+    static async getAllCases(status) {
+        const filter = {};
+        if (status) {
+            filter.status = status;
+        }
+        return CaseModel.find(filter).lean();
     }
 
     static async getMonthlyCountsGrouped(status, groupBy, startDate, endDate) {

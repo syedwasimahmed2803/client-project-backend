@@ -4,8 +4,8 @@ const FinanceStorage = require('../storage/FinanceStorage');
 const UtilityService = require('./UtilityService')
 
 class CaseService {
-  static async getCases() {
-    return CaseStorage.getAllCases();
+  static async getCases(status) {
+    return CaseStorage.getAllCases(status);
   }
 
   static async getMonthlyEntityCounts(entityType, status, startDate, endDate) {

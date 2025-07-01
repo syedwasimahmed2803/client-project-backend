@@ -90,7 +90,8 @@ const parseMongoError = require('../utils/Error');
 
 router.get('/', authenticate, authorizeRoles('admin', 'employee'), async (req, res) => {
   try {
-    const cases = await CaseService.getCases(req.query.status);
+    const user = req.user;
+    const cases = await CaseService.getCases(req.query.status, user);
     res.json(cases);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch cases' });
@@ -200,8 +201,6 @@ router.get('/monthly-entity-counts', authenticate, authorizeRoles('admin', 'empl
  *                 type: string
  *               patientName:
  *                 type: string
- *               companyName:
- *                 type: string
  *               insuranceReference:
  *                 type: string
  *               insurance:
@@ -218,8 +217,6 @@ router.get('/monthly-entity-counts', authenticate, authorizeRoles('admin', 'empl
  *               assistanceDate:
  *                 type: string
  *                 format: date-time
- *               serviceType:
- *                 type: string
  *               remarks:
  *                 type: string
  *               invoiceStatus:
@@ -291,7 +288,8 @@ router.get('/monthly-entity-counts', authenticate, authorizeRoles('admin', 'empl
  */
 router.post('/', authenticate, authorizeRoles('admin', 'employee'), async (req, res) => {
   try {
-    const newCase = await CaseService.addCase(req.body);
+    const user = req.user;
+    const newCase = await CaseService.addCase(req.body, user);
     res.status(201).json(newCase);
   } catch (error) {
     const message = parseMongoError(error);
@@ -511,9 +509,10 @@ router.delete('/:id', authenticate, authorizeRoles('admin'), async (req, res) =>
 router.put('/:id/in-review', authenticate, authorizeRoles('admin', 'employee'), async (req, res) => {
   const { id } = req.params;
   const { remark } = req.body;
+  const user = req.user;
 
   try {
-    const closedCase = await CaseService.closeCase(id, remark);
+    const closedCase = await CaseService.closeCase(id, remark, user);
     res.status(200).json(closedCase);
   } catch (error) {
     const message = parseMongoError(error);

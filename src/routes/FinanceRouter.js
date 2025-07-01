@@ -18,10 +18,24 @@ const FinanceService = require('../services/FinanceService');
  * @swagger
  * /finances:
  *   get:
- *     summary: Get all finances
+ *     summary: Get all finances (optionally filtered by issue date)
  *     tags: [Finance]
  *     parameters:
  *       - $ref: '#/components/parameters/XForwardedFor'
+ *       - in: query
+ *         name: startDate
+ *         schema:
+ *           type: string
+ *           format: date-time
+ *         required: false
+ *         description: Start date for filtering finances by issueDate
+ *       - in: query
+ *         name: endDate
+ *         schema:
+ *           type: string
+ *           format: date-time
+ *         required: false
+ *         description: End date for filtering finances by issueDate
  *     security:
  *       - bearerAuth: []
  *     responses:
@@ -72,7 +86,17 @@ const FinanceService = require('../services/FinanceService');
  */
 router.get('/', authenticate, authorizeRoles('admin', 'employee'), async (req, res) => {
   try {
-    const finance = await FinanceService.getFinances();
+      let { startDate, endDate } = req.query;
+
+    if (!startDate || !endDate) {
+      const now = new Date();
+      const sixMonthsAgo = new Date();
+      sixMonthsAgo.setMonth(now.getMonth() - 6);
+
+      startDate = sixMonthsAgo.toISOString();
+      endDate = now.toISOString();
+    }
+    const finance = await FinanceService.getFinances(startDate, endDate);
     res.json(finance);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch finances' });
@@ -132,13 +156,14 @@ router.get('/', authenticate, authorizeRoles('admin', 'employee'), async (req, r
 router.put('/:id/status', authenticate, authorizeRoles('admin'), async (req, res) => {
     const { status, remark } = req.body;
     const { id } = req.params;
+    const user = req.user;
 
     if (!['approve', 'reject'].includes(status)) {
         return res.status(400).send({ error: 'Invalid status value' });
     }
 
     try {
-        const finance = await FinanceService.updateFinanceStatus(id, status, remark);
+        const finance = await FinanceService.updateFinanceStatus(id, status, remark, user);
         res.status(200).json(finance);
     } catch (error) {
         const message = parseMongoError(error);

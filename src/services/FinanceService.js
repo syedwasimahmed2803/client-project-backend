@@ -4,8 +4,8 @@ const CaseStorage = require('../storage/CaseStorage');
 const InvoiceStorage = require('../storage/InvoiceStorage');
 
 class FinanceService {
-  static async getFinances() {
-    return FinanceStorage.getAllFinances();
+  static async getFinances(startDate, endDate) {
+    return FinanceStorage.getAllFinances(startDate, endDate);
   }
 
   static async addFinance(data) {
@@ -29,7 +29,7 @@ class FinanceService {
     return FinanceStorage.deleteFinance(id);
   }
 
-  static async updateFinanceStatus(financeId, status, remark) {
+  static async updateFinanceStatus(financeId, status, remark, user) {
     const financeDoc = await FinanceStorage.getFinanceById(financeId);
     if (!financeDoc) throw { status: 404, message: 'Finance entry not found' };
 
@@ -39,6 +39,8 @@ class FinanceService {
     if (status === 'reject') {
       caseDoc.status = 'open';
       caseDoc.remarks = remark ?? caseDoc.remarks;
+      caseDoc.remarkUser = remark ?? user.name;
+      caseDoc.rejectedBy = user.name;
       await CaseStorage.updateCase(caseDoc);
       await FinanceStorage.deleteFinance(financeId);
       return;
@@ -60,6 +62,7 @@ class FinanceService {
       await FinanceStorage.updateFinance(financeId, financeDoc);
 
       caseDoc.status = 'closed'
+      caseDoc.approvedBy = user.name;
       caseDoc.closedAt = Date.now();
       await CaseStorage.updateCase(caseDoc.id, caseDoc)
 

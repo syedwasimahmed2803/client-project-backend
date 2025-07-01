@@ -7,10 +7,13 @@ const HospitalModel = require('../models/Hospital')
 const { Types } = mongoose;
 
 class CaseStorage {
-    static async getAllCases(status) {
+    static async getAllCases(status, user) {
         const filter = {};
         if (status) {
             filter.status = status;
+        }
+        if (user.role === 'employee') {
+            filter.createdById = user.id;
         }
         return CaseModel.find(filter).lean();
     }

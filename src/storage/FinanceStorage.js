@@ -6,8 +6,15 @@ class FinanceStorage {
     return finance.save();
   }
 
-  static async getAllFinances() {
-    return FinanceModel.find().lean();
+  static async getAllFinances(startDate, endDate) {
+    const match = {};
+    if (startDate && endDate) {
+      match.issueDate = {
+        $gte: new Date(startDate),
+        $lte: new Date(endDate)
+      };
+    }
+    return FinanceModel.find(match).lean();
   }
 
   static async getFinanceById(id) {

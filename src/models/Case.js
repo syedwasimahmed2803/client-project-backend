@@ -5,7 +5,7 @@ const CaseSchema = new Schema({
   patientName: { type: String, required: true },
   insuranceReference: { type: String },
   insurance: { type: String },
-  insuranceType: { type: String, enum: ['Provider', 'Client'], required: true },
+  insuranceType: { type: String, enum: ['clients', 'providers'], required: true },
   insuranceId: { type: Types.ObjectId, required: true, refPath: 'insuranceType' },
   hospital: { type: String, required: true },
   hospitalId: { type: Types.ObjectId, ref: 'Hospital', required: true },

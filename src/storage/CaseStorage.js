@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const ProviderModel = require('../models/Provider')
 const ClientModel = require('../models/Client')
 const HospitalModel = require('../models/Hospital')
+const logIssue = require('../utils/Logger');
 const { Types } = mongoose;
 
 class CaseStorage {
@@ -95,33 +96,54 @@ class CaseStorage {
     }
 
     static async validateAndCreateCase(data) {
-        let InsuranceModel;
+        try {
+            let InsuranceModel;
 
-        if (data.insuranceType === 'Client') {
-            InsuranceModel = ClientModel;
-        } else if (data.insuranceType === 'Provider') {
-            InsuranceModel = ProviderModel;
+            if (data.insuranceType === 'clients') {
+                InsuranceModel = ClientModel;
+            } else if (data.insuranceType === 'providers') {
+                InsuranceModel = ProviderModel;
+            }
+
+            const insuranceExists = await InsuranceModel.exists({ _id: data.insuranceId });
+            if (!insuranceExists) {
+                throw new Error(`${data.insuranceType} with provided ID does not exist`);
+            }
+
+            const hospitalExists = await HospitalModel.exists({ _id: data.hospitalId });
+            if (!hospitalExists) {
+                throw new Error('Hospital with provided ID does not exist');
+            }
+
+            return CaseModel.create(data);
+        } catch (error) {
+            await logIssue('Issue in case creation', error.message, {
+                error
+            });
+            return error.message;
         }
-
-        const insuranceExists = await InsuranceModel.exists({ _id: data.insuranceId });
-        if (!insuranceExists) {
-            throw new Error(`${data.insuranceType} with provided ID does not exist`);
-        }
-
-        const hospitalExists = await HospitalModel.exists({ _id: data.hospitalId });
-        if (!hospitalExists) {
-            throw new Error('Hospital with provided ID does not exist');
-        }
-
-        return CaseModel.create(data);
     }
 
     static async updateCase(id, data) {
+        try{
         return CaseModel.findByIdAndUpdate(id, data, { new: true, runValidators: true }).lean();
+        }catch (error) {
+            await logIssue('Issue in case creation', error.message, {
+                error
+            });
+            return error.message;
+        }
     }
 
     static async deleteCase(id) {
+        try{
         return CaseModel.findByIdAndDelete(id).lean();
+        }catch (error) {
+            await logIssue('Issue in case creation', error.message, {
+                error
+            });
+            return error.message;
+        }
     }
 
     /**

@@ -24,9 +24,23 @@ const parseMongoError = require('../utils/Error');
  *         name: status
  *         schema:
  *           type: string
- *           enum: [open, in-review, close]
+ *           enum: [open, in-review, closed]
  *         required: false
  *         description: Filter cases by status
+  *       - in: query
+ *         name: startDate
+ *         schema:
+ *           type: string
+ *           format: date-time
+ *         required: false
+ *         description: Start date for filtering finances by issueDate
+ *       - in: query
+ *         name: endDate
+ *         schema:
+ *           type: string
+ *           format: date-time
+ *         required: false
+ *         description: End date for filtering finances by issueDate
  *     security:
  *       - bearerAuth: []
  *     responses:
@@ -77,7 +91,7 @@ const parseMongoError = require('../utils/Error');
  *                     type: string
  *                   status:
  *                     type: string
- *                     enum: [open, close]
+ *                     enum: [open, closed]
  *                   createdAt:
  *                     type: string
  *                     format: date-time
@@ -90,8 +104,9 @@ const parseMongoError = require('../utils/Error');
 
 router.get('/', authenticate, authorizeRoles('admin', 'employee'), async (req, res) => {
   try {
+     let { startDate, endDate } = req.query;
     const user = req.user;
-    const cases = await CaseService.getCases(req.query.status, user);
+    const cases = await CaseService.getCases(req.query.status, startDate, endDate, user);
     res.json(cases);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch cases' });
@@ -229,7 +244,7 @@ router.get('/monthly-entity-counts', authenticate, authorizeRoles('admin', 'empl
  *                 type: string
  *               status:
  *                 type: string
- *                 enum: [open, close]
+ *                 enum: [open, closed]
  *     responses:
  *       201:
  *         description: Case created successfully
@@ -276,7 +291,7 @@ router.get('/monthly-entity-counts', authenticate, authorizeRoles('admin', 'empl
  *                   type: string
  *                 status:
  *                   type: string
- *                   enum: [open, close]
+ *                   enum: [open, closed]
  *                 createdAt:
  *                   type: string
  *                   format: date-time
@@ -356,7 +371,7 @@ router.post('/', authenticate, authorizeRoles('admin', 'employee'), async (req, 
  *                 type: string
  *               status:
  *                 type: string
- *                 enum: [open, close]
+ *                 enum: [open, closed]
  *     responses:
  *       200:
  *         description: Case updated successfully
@@ -403,7 +418,7 @@ router.post('/', authenticate, authorizeRoles('admin', 'employee'), async (req, 
  *                   type: string
  *                 status:
  *                   type: string
- *                   enum: [open, close]
+ *                   enum: [open, closed]
  *                 createdAt:
  *                   type: string
  *                   format: date-time
@@ -519,6 +534,62 @@ router.put('/:id/in-review', authenticate, authorizeRoles('admin', 'employee'), 
     res.status(400).json({ message });
   }
 });
+
+/**
+ * @swagger
+ * /cases/closed-case-count:
+ *   get:
+ *     summary: Get count of closed cases grouped by creator
+ *     tags:
+ *       - Cases
+ *     parameters:
+ *       - $ref: '#/components/parameters/XForwardedFor'
+ *       - in: query
+ *         name: startDate
+ *         schema:
+ *           type: string
+ *           format: date
+ *         required: false
+ *         description: Filter cases closed after this date (defaults to 6 months ago if not provided)
+ *       - in: query
+ *         name: endDate
+ *         schema:
+ *           type: string
+ *           format: date
+ *         required: false
+ *         description: Filter cases closed before this date (defaults to now if not provided)
+ *     responses:
+ *       200:
+ *         description: Successfully fetched closed case counts
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   createdById:
+ *                     type: string
+ *                     description: ID of the user who created the case
+ *                   createdBy:
+ *                     type: string
+ *                     description: Name of the user who created the case
+ *                   count:
+ *                     type: integer
+ *                     description: Number of closed cases by the user in the specified time range
+ *       500:
+ *         description: Failed to fetch closed case counts
+ */
+router.get('/closed-case-count', authenticate, authorizeRoles('admin'), async (req, res) => {
+  try {
+    const { startDate, endDate } = req.query;
+    const counts = await CaseService.getClosedCaseCountsByUser(startDate, endDate);
+    res.json(counts);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch closed case counts' });
+  }
+});
+
 
 
 module.exports = router;

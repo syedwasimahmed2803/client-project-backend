@@ -4,8 +4,12 @@ const FinanceStorage = require('../storage/FinanceStorage');
 const UtilityService = require('./UtilityService')
 
 class CaseService {
-  static async getCases(status, user) {
-    return CaseStorage.getAllCases(status, user);
+  static async getCases(status, startDate, endDate, user) {
+    return CaseStorage.getAllCases(status, startDate, endDate, user);
+  }
+
+  static async getClosedCaseCountsByUser(startDate, endDate) {
+    return CaseStorage.getClosedCaseCountsByUser(startDate, endDate);
   }
 
   static async getMonthlyEntityCounts(entityType, status, startDate, endDate) {
@@ -16,7 +20,7 @@ class CaseService {
     if (!data.patientName || !data.insuranceType || !data.hospital) {
       throw new Error('Missing required fields');
     }
-    return CaseStorage.validateAndCreateCase({...data, createdById: user.id, createdBy: user.name});
+    return CaseStorage.validateAndCreateCase({ ...data, createdById: user.id, createdBy: user.name });
   }
 
   static async updateCase(id, data) {
@@ -42,7 +46,7 @@ class CaseService {
       // Update case
       caseDoc.status = 'in-review';
       caseDoc.remarks = remark ?? caseDoc.remarks;
-      caseDoc.remarkUser = remark?? user.name;
+      caseDoc.remarkUser = remark ?? user.name;
       await CaseStorage.updateCase(caseId, caseDoc);
 
       // Create finance entry

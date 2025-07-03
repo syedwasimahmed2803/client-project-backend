@@ -8,14 +8,26 @@ const logIssue = require('../utils/Logger');
 const { Types } = mongoose;
 
 class CaseStorage {
-    static async getAllCases(status, user) {
+    static async getAllCases(status, startDate, endDate, user) {
         const filter = {};
+
         if (status) {
             filter.status = status;
         }
+
         if (user.role === 'employee') {
             filter.createdById = user.id;
         }
+
+        // Default date range: last 6 months
+        const end = endDate ? new Date(endDate) : new Date();
+        const start = startDate ? new Date(startDate) : new Date(end);
+        if (!startDate) {
+            start.setMonth(start.getMonth() - 6);
+        }
+
+        filter.createdAt = { $gte: start, $lte: end };
+
         return CaseModel.find(filter).lean();
     }
 
@@ -91,6 +103,42 @@ class CaseStorage {
         return finalResult;
     }
 
+    static async getClosedCaseCountsByUser(startDate, endDate) {
+        const end = endDate ? new Date(endDate) : new Date();
+        const start = startDate ? new Date(startDate) : new Date(end);
+        if (!startDate) {
+            start.setMonth(start.getMonth() - 6); // default to last 6 months
+        }
+
+        return CaseModel.aggregate([
+            {
+                $match: {
+                    status: 'closed',
+                    closedAt: { $gte: start, $lte: end }
+                }
+            },
+            {
+                $group: {
+                    _id: {
+                        createdById: '$createdById',
+                        createdBy: '$createdBy'
+                    },
+                    count: { $sum: 1 }
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    createdById: '$_id.createdById',
+                    createdBy: '$_id.createdBy',
+                    count: 1
+                }
+            },
+            { $sort: { count: -1 } } // optional: sort by count descending
+        ]);
+    }
+
+
     static async getCaseById(id) {
         return CaseModel.findById(id).lean();
     }
@@ -125,9 +173,9 @@ class CaseStorage {
     }
 
     static async updateCase(id, data) {
-        try{
-        return CaseModel.findByIdAndUpdate(id, data, { new: true, runValidators: true }).lean();
-        }catch (error) {
+        try {
+            return CaseModel.findByIdAndUpdate(id, data, { new: true, runValidators: true }).lean();
+        } catch (error) {
             await logIssue('Issue in case creation', error.message, {
                 error
             });
@@ -136,9 +184,9 @@ class CaseStorage {
     }
 
     static async deleteCase(id) {
-        try{
-        return CaseModel.findByIdAndDelete(id).lean();
-        }catch (error) {
+        try {
+            return CaseModel.findByIdAndDelete(id).lean();
+        } catch (error) {
             await logIssue('Issue in case creation', error.message, {
                 error
             });

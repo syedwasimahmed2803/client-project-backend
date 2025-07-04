@@ -8,7 +8,9 @@ const ProviderRouter = require('./ProviderRouter');
 const AuthRouter = require('./AuthRouter'); 
 const CaseRouter = require('./CaseRouter');
 const FinanceRouter = require('./FinanceRouter');
+const InvoiceRouter = require('./InvoiceRouter');
 
+router.use('/invoices', InvoiceRouter);
 router.use('/finances', FinanceRouter);
 router.use('/cases', CaseRouter);
 router.use('/clients', ClientRouter);

@@ -67,9 +67,8 @@ class CaseService {
 
       // Create finance entry
       const financeData = {
-        caseId: caseDoc._id,
-        client: caseDoc.insurance,
-        clientId: caseDoc.insuranceId,
+        case: caseDoc.insuranceReference,
+        insurance: caseDoc.insurance,
         patientName: caseDoc.patientName,
         claimAmount: caseDoc.claimAmount,
         caseFee: insurerDoc.caseFee,
@@ -77,6 +76,8 @@ class CaseService {
         dueDate: null,
         remarks: remark,
         region: caseDoc.region,
+        createdBy: user.name,
+        createdById: user.id,
         status: null
       };
 

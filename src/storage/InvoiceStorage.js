@@ -6,12 +6,25 @@ class InvoiceStorage {
     return invoice.save();
   }
 
-  static async getAllInvoices() {
-    return InvoiceModel.find().lean();
+  static async getAllInvoices(startDate, endDate) {
+     const filter = {};
+    // Default date range: last 6 months
+        const end = endDate ? new Date(endDate) : new Date();
+        const start = startDate ? new Date(startDate) : new Date(end);
+        if (!startDate) {
+            start.setMonth(start.getMonth() - 6);
+        }
+
+        filter.createdAt = { $gte: start, $lte: end };
+    return InvoiceModel.find(filter).lean();
   }
 
-  static async updateInvoice(id, data) {
-    return InvoiceModel.findByIdAndUpdate(id, data, { new: true, runValidators: true }).lean();
+  static async updateInvoiceStatus(id) {
+    return InvoiceModel.findByIdAndUpdate(
+      id,
+      { status: 'paid' },
+      { new: true, runValidators: true }
+    ).lean();
   }
 }
 

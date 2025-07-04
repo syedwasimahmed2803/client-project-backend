@@ -48,14 +48,16 @@ class FinanceService {
 
     if (status === 'approve') {
       await InvoiceStorage.createInvoice({
-        case: financeDoc.caseId,
-        clientName: financeDoc.client,
+        case: financeDoc.case,
+        insurance: financeDoc.insurance,
         patientName: financeDoc.patientName,
         claimAmount: financeDoc.claimAmount,
         caseFee: financeDoc.caseFee,
         issueDate: financeDoc.issueDate,
         dueDate: financeDoc.dueDate,
-        status: 'pending'
+        status: 'pending',
+        createdBy: user.name,
+        createdById: user.id,
       });
 
       financeDoc.status = 'approve';

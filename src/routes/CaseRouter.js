@@ -27,7 +27,7 @@ const parseMongoError = require('../utils/Error');
  *           enum: [open, in-review, closed]
  *         required: false
  *         description: Filter cases by status
-  *       - in: query
+ *       - in: query
  *         name: startDate
  *         schema:
  *           type: string

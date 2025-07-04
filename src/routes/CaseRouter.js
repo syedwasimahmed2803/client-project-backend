@@ -67,7 +67,7 @@ const parseMongoError = require('../utils/Error');
  *                     type: string
  *                   insuranceType:
  *                     type: string
- *                     enum: [Provider, Client]
+ *                     enum: [providers, clients, hospitals]
  *                   insuranceId:
  *                     type: string
  *                   hospital:
@@ -146,10 +146,10 @@ router.get('/', authenticate, authorizeRoles('admin', 'employee'), async (req, r
  *         required: false
  *         schema:
  *           type: string
- *         description: Hospital/Client/Provider
+ *         description: hospitals/clients/providers
  *     responses:
  *       200:
- *         description: Monthly case counts grouped by entity (e.g., hospital, client, provider)
+ *         description: Monthly case counts grouped by entity (e.g., hospitals, clients, providers)
  *         content:
  *           application/json:
  *             schema:
@@ -222,7 +222,7 @@ router.get('/monthly-entity-counts', authenticate, authorizeRoles('admin', 'empl
  *                 type: string
  *               insuranceType:
  *                 type: string
- *                 enum: [Provider, Client]
+ *                 enum: [providers, clients, hospitals]
  *               insuranceId:
  *                 type: string
  *               hospital:
@@ -263,11 +263,13 @@ router.get('/monthly-entity-counts', authenticate, authorizeRoles('admin', 'empl
  *                   type: string
  *                 insuranceReference:
  *                   type: string
+*                 claimAmount:
+ *                   type: number
  *                 insurance:
  *                   type: string
  *                 insuranceType:
  *                   type: string
- *                   enum: [Provider, Client]
+ *                   enum: [providers, clients, hospitals]
  *                 insuranceId:
  *                   type: string
  *                 hospital:
@@ -347,7 +349,7 @@ router.post('/', authenticate, authorizeRoles('admin', 'employee'), async (req, 
  *                 type: string
  *               insuranceType:
  *                 type: string
- *                 enum: [Provider, Client]
+ *                 enum: [providers, clients, hospitals]
  *               insuranceId:
  *                 type: string
  *               hospital:
@@ -394,7 +396,7 @@ router.post('/', authenticate, authorizeRoles('admin', 'employee'), async (req, 
  *                   type: string
  *                 insuranceType:
  *                   type: string
- *                   enum: [Provider, Client]
+ *                   enum: [providers, clients, hospitals]
  *                 insuranceId:
  *                   type: string
  *                 hospital:

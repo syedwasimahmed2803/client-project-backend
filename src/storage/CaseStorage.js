@@ -43,15 +43,15 @@ class CaseStorage {
         }
 
         let groupField = '';
-        if (groupBy === 'Hospital') {
+        if (groupBy === 'hospitals') {
             match.hospital = { $exists: true, $ne: null };
             groupField = '$hospital';
-        } else if (groupBy === 'Client') {
-            match.insuranceType = 'Client';
+        } else if (groupBy === 'clients') {
+            match.insuranceType = 'clients';
             match.insurance = { $exists: true, $ne: null };
             groupField = '$insurance';
-        } else if (groupBy === 'Provider') {
-            match.insuranceType = 'Provider';
+        } else if (groupBy === 'providers') {
+            match.insuranceType = 'providers';
             match.insurance = { $exists: true, $ne: null };
             groupField = '$insurance';
         }
@@ -195,14 +195,14 @@ class CaseStorage {
     }
 
     /**
-      * Get count of active cases grouped by entity ID (client, provider, or hospital)
-      * @param {'client' | 'provider' | 'hospital'} entityType
+      * Get count of active cases grouped by entity ID (clients, providers, or hospitals)
+      * @param {'clients' | 'providers' | 'hospitals'} entityType
       * @param {string[]} entityIds
       * @returns {Promise<Object>} - Map of { entityId: count }
       */
     static async getActiveCasesCountForEntities(entityType, entityIds) {
-        if (!['Client', 'Provider', 'Hospital'].includes(entityType)) {
-            throw new Error('Invalid entityType. Must be one of: client, provider, hospital');
+        if (!['clients', 'providers', 'hospitals'].includes(entityType)) {
+            throw new Error('Invalid entityType. Must be one of: clients, providers, hospitals');
         }
 
         const objectIds = entityIds
@@ -212,14 +212,14 @@ class CaseStorage {
             status: 'open'
         };
 
-        if (entityType === 'Hospital') {
+        if (entityType === 'hospitals') {
             matchStage.hospitalId = { $in: objectIds };
         } else {
             matchStage.insuranceType = entityType;
             matchStage.insuranceId = { $in: objectIds };
         }
 
-        const groupField = entityType === 'Hospital' ? '$hospitalId' : '$insuranceId';
+        const groupField = entityType === 'hospitals' ? '$hospitalId' : '$insuranceId';
 
         const results = await CaseModel.aggregate([
             { $match: matchStage },

@@ -7,7 +7,7 @@ class ProviderStorage {
       const providers = await ProviderModel.find().lean();
     const providerIds = providers.map(provider => provider._id);
 
-    const activeCaseMap = await CaseStorage.getActiveCasesCountForEntities('Provider', providerIds);
+    const activeCaseMap = await CaseStorage.getActiveCasesCountForEntities('providers', providerIds);
 
     return providers.map(providers => ({
       ...providers,

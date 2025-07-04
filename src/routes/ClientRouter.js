@@ -85,6 +85,8 @@ router.get('/', authenticate, authorizeRoles('admin', 'employee'), async (req, r
  *               phone:
  *                 type: string
  *                 example: "+1987654321"
+ *               caseFee:
+ *                 type: string
  *     responses:
  *       201:
  *         description: Client created

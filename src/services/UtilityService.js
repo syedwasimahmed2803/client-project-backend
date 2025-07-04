@@ -25,6 +25,9 @@ class UtilityService {
     if(type === "clients"){
       return await ClientStorage.getClientById(id)
     }
+    if(type === "hospitals"){
+      return await HospitalStorage.getHospitalById(id)
+    }
   }
 
 }

@@ -51,8 +51,8 @@ class FinanceService {
         case: financeDoc.caseId,
         clientName: financeDoc.client,
         patientName: financeDoc.patientName,
-        hospitalAmount: financeDoc.hospitalAmount,
-        clientFee: financeDoc.clientFee,
+        claimAmount: financeDoc.claimAmount,
+        caseFee: financeDoc.caseFee,
         issueDate: financeDoc.issueDate,
         dueDate: financeDoc.dueDate,
         status: 'pending'

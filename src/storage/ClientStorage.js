@@ -6,7 +6,7 @@ class ClientStorage {
     const clients = await ClientModel.find().lean();
     const clientIds = clients.map(client => client._id);
 
-    const activeCaseMap = await CaseStorage.getActiveCasesCountForEntities('Client', clientIds);
+    const activeCaseMap = await CaseStorage.getActiveCasesCountForEntities('clients', clientIds);
 
     return clients.map(client => ({
       ...client,

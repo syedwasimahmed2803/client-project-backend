@@ -7,7 +7,7 @@ class HospitalStorage {
     const hospitals = await HospitalModel.find().lean();
     const hospitalIds = hospitals.map(hospital => hospital._id);
 
-    const activeCaseMap = await CaseStorage.getActiveCasesCountForEntities('Hospital', hospitalIds);
+    const activeCaseMap = await CaseStorage.getActiveCasesCountForEntities('hospitals', hospitalIds);
 
     return hospitals.map(hospital => ({
       ...hospital,

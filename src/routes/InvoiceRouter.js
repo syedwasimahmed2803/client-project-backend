@@ -41,9 +41,9 @@ const InvoiceService = require('../services/InvoiceService');
  *                     type: string
  *                   client:
  *                     type: string
- *                   hospitalAmount:
+ *                   claimAmount:
  *                     type: string
- *                   clientFee:
+ *                   caseFee:
  *                     type: string
  *                   issueDate:
  *                     type: string

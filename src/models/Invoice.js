@@ -5,8 +5,8 @@ const InvoiceSchema = new Schema({
   case: { type: Types.ObjectId, ref: 'Case', required: true },
   clientName: { type: String },
   patientName: { type: String },
-  hospitalAmount: { type: Number },
-  clientFee: { type: Number },
+  claimAmount: { type: Number , required: true },
+  caseFee: { type: Number , required: true },
   issueDate: { type: Date },
   dueDate: { type: Date },
   status: { type: String, enum: ['paid', 'pending', 'overdue'], default: 'pending' }

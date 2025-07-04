@@ -19,10 +19,10 @@ class UtilityService {
   }
 
   static async getInsurerByType(id, type) {
-    if(type === "Provider"){
+    if(type === "providers"){
       return await ProviderStorage.getProviderById(id)
     }
-    if(type === "Client"){
+    if(type === "clients"){
       return await ClientStorage.getClientById(id)
     }
   }

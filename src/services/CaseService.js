@@ -17,10 +17,26 @@ class CaseService {
   }
 
   static async addCase(data, user) {
-    if (!data.patientName || !data.insuranceType || !data.hospital) {
-      throw new Error('Missing required fields');
+    const { patientName, insuranceType, hospital, remarks } = data;
+
+    // Validate required fields
+    const missingFields = [];
+    if (!patientName) missingFields.push('patientName');
+    if (!insuranceType) missingFields.push('insuranceType');
+    if (!hospital) missingFields.push('hospital');
+
+    if (missingFields.length > 0) {
+      throw new Error(`Missing required fields: ${missingFields.join(', ')}`);
     }
-    return CaseStorage.validateAndCreateCase({ ...data, createdById: user.id, createdBy: user.name });
+
+    const caseData = {
+      ...data,
+      createdById: user.id,
+      createdBy: user.name,
+      ...(remarks && { remarkUser: user.name }),
+    };
+
+    return CaseStorage.validateAndCreateCase(caseData);
   }
 
   static async updateCase(id, data) {

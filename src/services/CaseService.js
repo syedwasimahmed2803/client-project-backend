@@ -34,7 +34,7 @@ class CaseService {
       createdById: user.id,
       createdBy: user.name,
       ...(remarks && { remarkUser: user.name }),
-      ...(remarks && { remarkUser: user.role }),
+      ...(remarks && { remarkUserRole: user.role }),
     };
 
     return CaseStorage.validateAndCreateCase(caseData);
@@ -66,22 +66,28 @@ class CaseService {
       caseDoc.remarkUser = remark ?? user.name;
       caseDoc.remarkUser = remark ?? user.name;
       caseDoc.remarkUserRole = remark ?? user.role;
+      caseDoc.updatedAt = Date.now();
       await CaseStorage.updateCase(caseId, caseDoc);
 
       // Create finance entry
       const financeData = {
-        case: caseDoc.insuranceReference,
+        insuranceReference: caseDoc.insuranceReference,
         insurance: caseDoc.insurance,
+        insuranceType: caseDoc.insuranceType,
         patientName: caseDoc.patientName,
         claimAmount: caseDoc.claimAmount,
         caseFee: insurerDoc.caseFee,
         issueDate: new Date(),
         dueDate: null,
-        remarks: remark,
+        remarks: caseDoc.remarks,
+        remarkUser: caseDoc.remarkUser,
+        remarkUserRole: caseDoc.remarkUserRole,
+        caseId: caseDoc._id,
         region: caseDoc.region,
+        country: caseDoc.country,
         createdBy: user.name,
         createdById: user.id,
-        status: null
+        status: 'pending'
       };
 
       await FinanceStorage.createFinance(financeData);

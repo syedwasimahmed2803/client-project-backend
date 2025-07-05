@@ -42,6 +42,7 @@ class FinanceService {
       caseDoc.remarkUser = remark ?? user.name;
       caseDoc.remarkUserRole = remark ?? user.role;
       caseDoc.rejectedBy = user.name;
+      caseDoc.updatedAt = Date.now();
       await CaseStorage.updateCase(caseDoc);
       await FinanceStorage.deleteFinance(financeId);
       return;
@@ -49,8 +50,9 @@ class FinanceService {
 
     if (status === 'approve') {
       await InvoiceStorage.createInvoice({
-        case: financeDoc.case,
+        insuranceReference: financeDoc.case,
         insurance: financeDoc.insurance,
+        insuranceType: financeDoc.insuranceType,
         patientName: financeDoc.patientName,
         claimAmount: financeDoc.claimAmount,
         caseFee: financeDoc.caseFee,
@@ -59,14 +61,23 @@ class FinanceService {
         status: 'pending',
         createdBy: user.name,
         createdById: user.id,
+        remarks: financeDoc.remarks,
+        remarkUser: financeDoc.remarkUser,
+        remarkUserRole: financeDoc.remarkUserRole,
+        caseId: financeDoc.caseId,
+        region: financeDoc.region,
+        country: financeDoc.country,
+        financeId: financeDoc._id
       });
 
       financeDoc.status = 'approve';
+      financeDoc.updatedAt = Date.now();
       await FinanceStorage.updateFinance(financeId, financeDoc);
 
       caseDoc.status = 'closed'
       caseDoc.approvedBy = user.name;
       caseDoc.closedAt = Date.now();
+      caseDoc.updatedAt = Date.now();
       await CaseStorage.updateCase(caseDoc.id, caseDoc)
 
       return financeDoc;

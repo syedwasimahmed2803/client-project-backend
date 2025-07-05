@@ -50,7 +50,7 @@ class FinanceService {
     }
 
     if (status === 'approve') {
-      await InvoiceStorage.createInvoice({
+      const invoiceDoc = await InvoiceStorage.createInvoice({
         insuranceReference: financeDoc.insuranceReference,
         insurance: financeDoc.insurance,
         insuranceType: financeDoc.insuranceType,
@@ -71,12 +71,14 @@ class FinanceService {
         financeId: financeDoc._id
       });
 
-      financeDoc.status = 'approve';
-      await FinanceStorage.updateFinance(financeId, financeDoc);
+
+      if (invoiceDoc._id) {
+        await FinanceStorage.deleteFinance(financeId, financeDoc);
+      }
 
       caseDoc.status = 'closed'
       caseDoc.approvedBy = user.name;
-      caseDoc.closedAt = Date.now();
+      caseDoc.closedAt = new Date();
       await CaseStorage.updateCase(caseDoc.id, caseDoc)
 
       return financeDoc;

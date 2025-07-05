@@ -10,6 +10,7 @@ const CaseSchema = new Schema({
   hospital: { type: String, required: true },
   hospitalId: { type: Types.ObjectId, ref: 'Hospital', required: true },
   remarkUser: { type: String },
+  remarkUserRole: { type: String, enum: ['admin', 'employee'] },
   createdById: { type: Types.ObjectId, ref: 'User', required: true },
   createdBy: { type: String },
   approvedBy: { type: String },

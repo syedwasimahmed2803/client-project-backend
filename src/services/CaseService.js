@@ -34,6 +34,7 @@ class CaseService {
       createdById: user.id,
       createdBy: user.name,
       ...(remarks && { remarkUser: user.name }),
+      ...(remarks && { remarkUser: user.role }),
     };
 
     return CaseStorage.validateAndCreateCase(caseData);
@@ -57,12 +58,14 @@ class CaseService {
       if (!hospitalDoc) throw { status: 404, message: 'Hospital not found' };
 
       const insurerDoc = await UtilityService.getInsurerByType(caseDoc.insuranceId, caseDoc.insuranceType);
-      if (!insurerDoc) throw { status: 404, message: 'Client not found' };
+      if (!insurerDoc) throw { status: 404, message: 'Insurance entity not found' };
 
       // Update case
       caseDoc.status = 'in-review';
       caseDoc.remarks = remark ?? caseDoc.remarks;
       caseDoc.remarkUser = remark ?? user.name;
+      caseDoc.remarkUser = remark ?? user.name;
+      caseDoc.remarkUserRole = remark ?? user.role;
       await CaseStorage.updateCase(caseId, caseDoc);
 
       // Create finance entry

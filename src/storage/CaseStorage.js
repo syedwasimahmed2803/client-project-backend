@@ -151,6 +151,8 @@ class CaseStorage {
                 InsuranceModel = ClientModel;
             } else if (data.insuranceType === 'providers') {
                 InsuranceModel = ProviderModel;
+            } else if (data.insuranceType === 'hospitals') {
+                InsuranceModel = HospitalModel;
             }
 
             const insuranceExists = await InsuranceModel.exists({ _id: data.insuranceId });

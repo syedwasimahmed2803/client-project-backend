@@ -52,7 +52,7 @@ class FinanceService {
 
     if (status === 'approve') {
       await InvoiceStorage.createInvoice({
-        insuranceReference: financeDoc.case,
+        insuranceReference: financeDoc.insuranceReference,
         insurance: financeDoc.insurance,
         insuranceType: financeDoc.insuranceType,
         patientName: financeDoc.patientName,

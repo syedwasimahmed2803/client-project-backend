@@ -39,6 +39,11 @@ class FinanceService {
     if (status === 'reject') {
       caseDoc.status = 'open';
       caseDoc.rejectedBy = user.name;
+      if (remark) {
+        caseDoc.remarks = remark;
+        caseDoc.remarkUser = user.name;
+        caseDoc.remarkUserRole = user.role;
+      }
       await CaseStorage.updateCase(caseDoc._id, caseDoc);
       await FinanceStorage.deleteFinance(financeId);
       return;

@@ -39,7 +39,7 @@ class FinanceService {
     if (status === 'reject') {
       caseDoc.status = 'open';
       caseDoc.rejectedBy = user.name;
-      await CaseStorage.updateCase(caseDoc.id, caseDoc);
+      await CaseStorage.updateCase(caseDoc._id, caseDoc);
       await FinanceStorage.deleteFinance(financeId);
       return;
     }
@@ -74,8 +74,7 @@ class FinanceService {
       caseDoc.status = 'closed'
       caseDoc.approvedBy = user.name;
       caseDoc.closedAt = new Date();
-      await CaseStorage.updateCase(caseDoc.id, caseDoc)
-
+      await CaseStorage.updateCase(caseDoc._id, caseDoc)
       return financeDoc;
     }
   }

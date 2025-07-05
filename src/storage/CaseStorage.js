@@ -4,9 +4,6 @@ const mongoose = require('mongoose');
 const ProviderModel = require('../models/Provider')
 const ClientModel = require('../models/Client')
 const HospitalModel = require('../models/Hospital')
-const ProviderStorage = require('../storage/ProviderStorage');
-const HospitalStorage = require('../storage/HospitalStorage');
-const ClientStorage = require('../storage/ClientStorage');
 const logIssue = require('../utils/Logger');
 const { Types } = mongoose;
 
@@ -167,31 +164,12 @@ class CaseStorage {
             if (!hospitalData) {
                 throw new Error('Hospital with provided ID does not exist');
             }
-
-            const insurerDoc = await this.getInsurerByType(data.insuranceId, data.insuranceType);
-
-            return CaseModel.create({
-                ...data,
-                region: insurerDoc.region,
-                country: insurerDoc.country
-            });
+            return CaseModel.create(data);
         } catch (error) {
             await logIssue('Issue in case creation', error.message, {
                 error
             });
             return error.message;
-        }
-    }
-
-    static async getInsurerByType(id, type) {
-        if (type === "providers") {
-            return await ProviderStorage.getProviderById(id)
-        }
-        if (type === "clients") {
-            return await ClientStorage.getClientById(id)
-        }
-        if (type === "hospitals") {
-            return await HospitalStorage.getHospitalById(id)
         }
     }
 

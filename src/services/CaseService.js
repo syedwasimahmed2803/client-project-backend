@@ -74,8 +74,8 @@ class CaseService {
         remarkUser: caseDoc.remarkUser,
         remarkUserRole: caseDoc.remarkUserRole,
         caseId: caseDoc._id,
-        region: caseDoc.region,
-        country: caseDoc.country,
+        region: insurerDoc.region,
+        country: insurerDoc.country,
         createdBy: user.name,
         createdById: user.id,
         status: 'pending'

@@ -90,7 +90,6 @@ class CaseService {
         caseDoc.remarkUser = user.name;
         caseDoc.remarkUserRole = user.role;
       }
-      caseDoc.updatedAt = Date.now();
       await CaseStorage.updateCase(caseId, caseDoc);
 
       return caseDoc;

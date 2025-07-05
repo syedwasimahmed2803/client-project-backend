@@ -44,7 +44,6 @@ class FinanceService {
         caseDoc.remarkUserRole = user.role;
       }
       caseDoc.rejectedBy = user.name;
-      caseDoc.updatedAt = Date.now();
       await CaseStorage.updateCase(caseDoc);
       await FinanceStorage.deleteFinance(financeId);
       return;
@@ -73,13 +72,11 @@ class FinanceService {
       });
 
       financeDoc.status = 'approve';
-      financeDoc.updatedAt = Date.now();
       await FinanceStorage.updateFinance(financeId, financeDoc);
 
       caseDoc.status = 'closed'
       caseDoc.approvedBy = user.name;
       caseDoc.closedAt = Date.now();
-      caseDoc.updatedAt = Date.now();
       await CaseStorage.updateCase(caseDoc.id, caseDoc)
 
       return financeDoc;

@@ -60,15 +60,6 @@ class CaseService {
       const insurerDoc = await UtilityService.getInsurerByType(caseDoc.insuranceId, caseDoc.insuranceType);
       if (!insurerDoc) throw { status: 404, message: 'Insurance entity not found' };
 
-      // Update case
-      caseDoc.status = 'in-review';
-      caseDoc.remarks = remark ?? caseDoc.remarks;
-      caseDoc.remarkUser = remark ?? user.name;
-      caseDoc.remarkUser = remark ?? user.name;
-      caseDoc.remarkUserRole = remark ?? user.role;
-      caseDoc.updatedAt = Date.now();
-      await CaseStorage.updateCase(caseId, caseDoc);
-
       // Create finance entry
       const financeData = {
         insuranceReference: caseDoc.insuranceReference,
@@ -91,6 +82,16 @@ class CaseService {
       };
 
       await FinanceStorage.createFinance(financeData);
+
+      // Update case
+      caseDoc.status = 'in-review';
+      if (remark) {
+        caseDoc.remarks = remark;
+        caseDoc.remarkUser = user.name;
+        caseDoc.remarkUserRole = user.role;
+      }
+      caseDoc.updatedAt = Date.now();
+      await CaseStorage.updateCase(caseId, caseDoc);
 
       return caseDoc;
     } catch (error) {

@@ -4,6 +4,9 @@ const mongoose = require('mongoose');
 const ProviderModel = require('../models/Provider')
 const ClientModel = require('../models/Client')
 const HospitalModel = require('../models/Hospital')
+const ProviderStorage = require('../storage/ProviderStorage');
+const HospitalStorage = require('../storage/HospitalStorage');
+const ClientStorage = require('../storage/ClientStorage');
 const logIssue = require('../utils/Logger');
 const { Types } = mongoose;
 
@@ -155,22 +158,40 @@ class CaseStorage {
                 InsuranceModel = HospitalModel;
             }
 
-            const insuranceExists = await InsuranceModel.exists({ _id: data.insuranceId });
-            if (!insuranceExists) {
+            const insuranceData = await InsuranceModel.exists({ _id: data.insuranceId });
+            if (!insuranceData) {
                 throw new Error(`${data.insuranceType} with provided ID does not exist`);
             }
 
-            const hospitalExists = await HospitalModel.exists({ _id: data.hospitalId });
-            if (!hospitalExists) {
+            const hospitalData = await HospitalModel.exists({ _id: data.hospitalId });
+            if (!hospitalData) {
                 throw new Error('Hospital with provided ID does not exist');
             }
 
-            return CaseModel.create(data);
+            const insurerDoc = await this.getInsurerByType(data.insuranceId, data.insuranceType);
+
+            return CaseModel.create({
+                ...data,
+                region: insurerDoc.region,
+                country: insurerDoc.country
+            });
         } catch (error) {
             await logIssue('Issue in case creation', error.message, {
                 error
             });
             return error.message;
+        }
+    }
+
+    static async getInsurerByType(id, type) {
+        if (type === "providers") {
+            return await ProviderStorage.getProviderById(id)
+        }
+        if (type === "clients") {
+            return await ClientStorage.getClientById(id)
+        }
+        if (type === "hospitals") {
+            return await HospitalStorage.getHospitalById(id)
         }
     }
 

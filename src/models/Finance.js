@@ -19,8 +19,10 @@ const FinanceSchema = new Schema({
   status: { type: String, enum: ['approve', 'reject', 'pending'], default: null },
   createdById: { type: Types.ObjectId, ref: 'User', required: true },
   financeCreatedAt: { type: Date },
+  createdAt: { type: Date },
+  updatedAt: { type: Date },
   createdBy: { type: String },
-}, { timestamps: true });
+});
 
 const Finance = mongoose.model('Finance', FinanceSchema);
 

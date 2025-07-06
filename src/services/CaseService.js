@@ -1,5 +1,7 @@
 const CaseStorage = require('../storage/CaseStorage');
 const HospitalStorage = require('../storage/HospitalStorage');
+const ClientStorage = require('../storage/ClientStorage');
+const ProviderStorage = require('../storage/ProviderStorage');
 const FinanceStorage = require('../storage/FinanceStorage');
 const UtilityService = require('./UtilityService')
 
@@ -17,7 +19,7 @@ class CaseService {
   }
 
   static async addCase(data, user) {
-    const { patientName, insuranceType, hospital, remarks } = data;
+    const { patientName, insuranceType, insuranceId, hospital, remarks } = data;
 
     // Validate required fields
     const missingFields = [];
@@ -28,11 +30,22 @@ class CaseService {
     if (missingFields.length > 0) {
       throw new Error(`Missing required fields: ${missingFields.join(', ')}`);
     }
+    let insurerDoc;
+
+    if (insuranceType === 'clients') {
+      insurerDoc = await ClientStorage.getClientById(insuranceId)
+    } else if (data.insuranceType === 'providers') {
+      insurerDoc = await ProviderStorage.getHospitalById(insuranceId)
+    } else if (data.insuranceType === 'hospitals') {
+      insurerDoc = await HospitalStorage.getHospitalById(insuranceId)
+    }
 
     const caseData = {
       ...data,
       createdById: user.id,
       createdBy: user.name,
+      region: insurerDoc.region,
+      country: insurerDoc.country,
       ...(remarks && { remarkUser: user.name }),
       ...(remarks && { remarkUserRole: user.role }),
     };
@@ -74,8 +87,8 @@ class CaseService {
         remarkUser: caseDoc.remarkUser,
         remarkUserRole: caseDoc.remarkUserRole,
         caseId: caseDoc._id,
-        region: insurerDoc.region,
-        country: insurerDoc.country,
+        region: caseDoc.region,
+        country: caseDoc.country,
         createdBy: user.name,
         createdById: user.id,
         status: 'pending'

@@ -96,9 +96,9 @@ router.get('/', authenticate, authorizeRoles('admin', 'employee'), async (req, r
 
 /**
  * @swagger
- * /invoices/{invoiceId}/paid:
+ * /invoices/{invoiceId}/status:
  *   put:
- *     summary: Mark invoice as paid
+ *     summary: Update the status of an invoice
  *     tags: [Invoice]
  *     parameters:
  *       - $ref: '#/components/parameters/XForwardedFor'
@@ -107,12 +107,25 @@ router.get('/', authenticate, authorizeRoles('admin', 'employee'), async (req, r
  *         required: true
  *         schema:
  *           type: string
- *         description: ID of the invoice to mark as paid
+ *         description: ID of the invoice to update
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - status
+ *             properties:
+ *               status:
+ *                 type: string
+ *                 enum: [unpaid, paid]
+ *                 description: New status of the invoice
  *     security:
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: Invoice marked as paid
+ *         description: Invoice status updated successfully
  *         content:
  *           application/json:
  *             schema:
@@ -122,25 +135,33 @@ router.get('/', authenticate, authorizeRoles('admin', 'employee'), async (req, r
  *                   type: string
  *                 invoice:
  *                   type: object
+ *       400:
+ *         description: Invalid input or bad request
  *       404:
  *         description: Invoice not found
  *       500:
  *         description: Server error
  */
-
-// PUT /invoices/:invoiceId/paid
-router.put('/:id/paid', authenticate, authorizeRoles('admin'), async (req, res) => {
+// PUT /invoices/:invoiceId/status
+router.put('/:id/status', authenticate, authorizeRoles('admin'), async (req, res) => {
   const { id } = req.params;
+  const { status } = req.body;
+  const user = req.user;
+
+  if (!['paid', 'unpaid'].includes(status)) {
+    return res.status(400).send({ error: 'Invalid status value' });
+  }
 
   try {
-    const paidInvoice = await InvoiceService.updateInvoiceStatus(id);
-    if (!paidInvoice) {
+    const updatedInvoice = await InvoiceService.updateInvoiceStatus(id, status, user);
+    if (!updatedInvoice) {
       return res.status(404).json({ message: 'Invoice not found' });
     }
-    res.status(200).json({ message: 'Invoice marked as paid', invoice: paidInvoice });
+    res.status(200).json({ message: 'Invoice status updated', invoice: updatedInvoice });
   } catch (error) {
     const message = parseMongoError(error);
     res.status(400).json({ message });
   }
 });
+
 module.exports = router;

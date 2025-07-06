@@ -23,8 +23,10 @@ const CaseSchema = new Schema({
   region: { type: String },
   country: { type: String },
   status: { type: String, enum: ['open', 'in-review', 'closed'], default: 'open' },
+  createdAt: { type: Date },
+  updatedAt: { type: Date },
   closedAt: { type: Date, default: null },
-}, { timestamps: true });
+});
 
 const Case = mongoose.model('Case', CaseSchema);
 

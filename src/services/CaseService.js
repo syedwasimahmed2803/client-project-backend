@@ -47,6 +47,8 @@ class CaseService {
       createdBy: user.name,
       region: insurerDoc.region,
       country: insurerDoc.country,
+      createdAt: Date(),
+      updatedAt: Date(),
       ...(remarks && { remarkUser: user.name }),
       ...(remarks && { remarkUserRole: user.role }),
     };
@@ -55,7 +57,7 @@ class CaseService {
   }
 
   static async updateCase(id, data) {
-    return CaseStorage.updateCase(id, data);
+    return CaseStorage.updateCase(id, {...data, updatedAt: Date()});
   }
 
   static async deleteCase(id) {
@@ -73,17 +75,6 @@ class CaseService {
 
       const insurerDoc = await UtilityService.getInsurerByType(caseDoc.insuranceId, caseDoc.insuranceType);
       if (!insurerDoc) throw { status: 404, message: 'Insurance entity not found' };
-
-       // Update case
-      caseDoc.status = 'in-review';
-      if (remark) {
-        caseDoc.remarks = remark;
-        caseDoc.remarkUser = user.name;
-        caseDoc.remarkUserRole = user.role;
-      }
-      await CaseStorage.updateCase(caseId, caseDoc);
-
-      caseDoc = await CaseStorage.getCaseById(caseId);
 
       // Create finance entry
       const financeData = {
@@ -111,6 +102,14 @@ class CaseService {
 
       await FinanceStorage.createFinance(financeData);
 
+         // Update case
+      caseDoc.status = 'in-review';
+      if (remark) {
+        caseDoc.remarks = remark;
+        caseDoc.remarkUser = user.name;
+        caseDoc.remarkUserRole = user.role;
+      }
+      await CaseStorage.updateCase(caseId, caseDoc);
       return caseDoc;
     } catch (error) {
       return error;

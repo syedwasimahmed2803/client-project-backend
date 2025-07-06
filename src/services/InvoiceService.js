@@ -19,8 +19,8 @@ class InvoiceService {
 //     return InvoiceStorage.createInvoice(data);
 //   }
 
-  static async updateInvoiceStatus(id) {
-    return InvoiceStorage.updateInvoiceStatus(id);
+  static async updateInvoiceStatus(id, status, user) {
+    return InvoiceStorage.updateInvoiceStatus(id, status, user);
   }
 
 //   static async deleteInvoice(id) {

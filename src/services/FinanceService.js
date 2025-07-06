@@ -50,12 +50,6 @@ class FinanceService {
     }
 
     if (status === 'approve') {
-       caseDoc.status = 'closed'
-      caseDoc.approvedBy = user.name;
-      caseDoc.closedAt = Date();
-      await CaseStorage.updateCase(caseDoc._id, caseDoc)
-
-      caseDoc = await CaseStorage.getCaseById(financeDoc.caseId);
 
       const invoiceDoc = await InvoiceStorage.createInvoice({
         insuranceReference: financeDoc.insuranceReference,
@@ -76,6 +70,7 @@ class FinanceService {
         region: financeDoc.region,
         country: financeDoc.country,
         financeId: financeDoc._id,
+        updatedByUser: user.name,
         createdAt: caseDoc.createdAt,
         updatedAt: caseDoc.updatedAt,
         invoiceCreatedAt: Date.now()
@@ -85,7 +80,13 @@ class FinanceService {
       if (invoiceDoc._id) {
         await FinanceStorage.deleteFinance(financeId, financeDoc);
       }
-      return financeDoc;
+
+      caseDoc.status = 'closed'
+      caseDoc.approvedBy = user.name;
+      caseDoc.closedAt = Date();
+      await CaseStorage.updateCase(caseDoc._id, caseDoc)
+
+      return invoiceDoc;
     }
   }
 }

@@ -17,6 +17,7 @@ const InvoiceSchema = new Schema({
   region: { type: String },
   country: { type: String },
   dueDate: { type: Date },
+  invoiceCreatedAt: { type: Date },
   status: { type: String, enum: ['paid', 'pending', 'overdue'], default: 'pending' },
   createdById: { type: Types.ObjectId, ref: 'User', required: true },
   createdBy: { type: String },

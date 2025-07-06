@@ -18,6 +18,7 @@ const FinanceSchema = new Schema({
   country: { type: String },
   status: { type: String, enum: ['approve', 'reject', 'pending'], default: null },
   createdById: { type: Types.ObjectId, ref: 'User', required: true },
+  financeCreatedAt: { type: Date },
   createdBy: { type: String },
 }, { timestamps: true });
 

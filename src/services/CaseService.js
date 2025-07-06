@@ -64,7 +64,7 @@ class CaseService {
 
   static async closeCase(caseId, remark, user) {
     try {
-      const caseDoc = await CaseStorage.getCaseById(caseId);
+      let caseDoc = await CaseStorage.getCaseById(caseId);
       if (!caseDoc) throw { status: 404, message: 'Case not found' };
       if (caseDoc.status === 'closed' || caseDoc.status === 'in-review') throw { status: 404, message: 'Case is already Closed or in-review' };
 
@@ -74,6 +74,17 @@ class CaseService {
       const insurerDoc = await UtilityService.getInsurerByType(caseDoc.insuranceId, caseDoc.insuranceType);
       if (!insurerDoc) throw { status: 404, message: 'Insurance entity not found' };
 
+       // Update case
+      caseDoc.status = 'in-review';
+      if (remark) {
+        caseDoc.remarks = remark;
+        caseDoc.remarkUser = user.name;
+        caseDoc.remarkUserRole = user.role;
+      }
+      await CaseStorage.updateCase(caseId, caseDoc);
+
+      caseDoc = await CaseStorage.getCaseById(caseId);
+
       // Create finance entry
       const financeData = {
         insuranceReference: caseDoc.insuranceReference,
@@ -82,7 +93,7 @@ class CaseService {
         patientName: caseDoc.patientName,
         claimAmount: caseDoc.claimAmount,
         caseFee: insurerDoc.caseFee,
-        issueDate: new Date(),
+        issueDate: Date(),
         dueDate: null,
         remarks: caseDoc.remarks,
         remarkUser: caseDoc.remarkUser,
@@ -92,19 +103,13 @@ class CaseService {
         country: caseDoc.country,
         createdBy: user.name,
         createdById: user.id,
-        status: 'pending'
+        status: 'pending',
+        createdAt: caseDoc.createdAt,
+        financeCreatedAt: Date(),
+        updatedAt: caseDoc.updatedAt
       };
 
       await FinanceStorage.createFinance(financeData);
-
-      // Update case
-      caseDoc.status = 'in-review';
-      if (remark) {
-        caseDoc.remarks = remark;
-        caseDoc.remarkUser = user.name;
-        caseDoc.remarkUserRole = user.role;
-      }
-      await CaseStorage.updateCase(caseId, caseDoc);
 
       return caseDoc;
     } catch (error) {

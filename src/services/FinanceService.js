@@ -33,7 +33,7 @@ class FinanceService {
     const financeDoc = await FinanceStorage.getFinanceById(financeId);
     if (!financeDoc) throw { status: 404, message: 'Finance entry not found' };
 
-    const caseDoc = await CaseStorage.getCaseById(financeDoc.caseId);
+    let caseDoc = await CaseStorage.getCaseById(financeDoc.caseId);
     if (!caseDoc) throw { status: 404, message: 'Associated case not found' };
 
     if (status === 'reject') {
@@ -50,6 +50,13 @@ class FinanceService {
     }
 
     if (status === 'approve') {
+       caseDoc.status = 'closed'
+      caseDoc.approvedBy = user.name;
+      caseDoc.closedAt = Date();
+      await CaseStorage.updateCase(caseDoc._id, caseDoc)
+
+      caseDoc = await CaseStorage.getCaseById(financeDoc.caseId);
+
       const invoiceDoc = await InvoiceStorage.createInvoice({
         insuranceReference: financeDoc.insuranceReference,
         insurance: financeDoc.insurance,
@@ -68,18 +75,16 @@ class FinanceService {
         caseId: financeDoc.caseId,
         region: financeDoc.region,
         country: financeDoc.country,
-        financeId: financeDoc._id
+        financeId: financeDoc._id,
+        createdAt: caseDoc.createdAt,
+        updatedAt: caseDoc.updatedAt,
+        invoiceCreatedAt: Date.now()
       });
 
 
       if (invoiceDoc._id) {
         await FinanceStorage.deleteFinance(financeId, financeDoc);
       }
-
-      caseDoc.status = 'closed'
-      caseDoc.approvedBy = user.name;
-      caseDoc.closedAt = new Date();
-      await CaseStorage.updateCase(caseDoc._id, caseDoc)
       return financeDoc;
     }
   }

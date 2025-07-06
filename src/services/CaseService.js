@@ -26,6 +26,7 @@ class CaseService {
     if (!patientName) missingFields.push('patientName');
     if (!insuranceType) missingFields.push('insuranceType');
     if (!hospital) missingFields.push('hospital');
+    if (!insuranceId) missingFields.push('insuranceId');
 
     if (missingFields.length > 0) {
       throw new Error(`Missing required fields: ${missingFields.join(', ')}`);

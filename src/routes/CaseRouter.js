@@ -521,7 +521,6 @@ router.delete('/:id', authenticate, authorizeRoles('admin'), async (req, res) =>
  *       500:
  *         description: Server error
  */
-
 // PUT /cases/:caseId/close
 router.put('/:id/in-review', authenticate, authorizeRoles('admin', 'employee'), async (req, res) => {
   const { id } = req.params;

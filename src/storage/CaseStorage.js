@@ -34,42 +34,13 @@ class CaseStorage {
     static async getMonthlyCountsGrouped(status, groupBy, startDate, endDate) {
         const dateField = status === 'closed' ? 'closedAt' : 'createdAt';
 
-        const match = {
+        const baseMatch = {
             [dateField]: { $gte: startDate, $lte: endDate }
         };
 
         if (status) {
-            match.status = status;
+            baseMatch.status = status;
         }
-
-        let groupField = '';
-        if (groupBy === 'hospitals') {
-            match.hospital = { $exists: true, $ne: null };
-            groupField = '$hospital';
-        } else if (groupBy === 'clients') {
-            match.insuranceType = 'clients';
-            match.insurance = { $exists: true, $ne: null };
-            groupField = '$insurance';
-        } else if (groupBy === 'providers') {
-            match.insuranceType = 'providers';
-            match.insurance = { $exists: true, $ne: null };
-            groupField = '$insurance';
-        }
-
-        const result = await CaseModel.aggregate([
-            { $match: match },
-            {
-                $group: {
-                    _id: {
-                        groupName: groupField,
-                        year: { $year: `$${dateField}` },
-                        month: { $month: `$${dateField}` }
-                    },
-                    count: { $sum: 1 }
-                }
-            },
-            { $sort: { '_id.groupName': 1, '_id.year': 1, '_id.month': 1 } }
-        ]);
 
         // Step 1: Generate all month keys in range
         const monthKeys = [];
@@ -81,20 +52,58 @@ class CaseStorage {
             current.setMonth(current.getMonth() + 1);
         }
 
-        // Step 2: Organize counts by groupName
+        const types = [
+            {
+                label: 'hospitals',
+                match: { insuranceType: 'hospitals', insurance: { $exists: true, $ne: null } },
+                groupField: '$hospital',
+            },
+            {
+                label: 'clients',
+                match: { insuranceType: 'clients', insurance: { $exists: true, $ne: null } },
+                groupField: '$insurance',
+            },
+            {
+                label: 'providers',
+                match: { insuranceType: 'providers', insurance: { $exists: true, $ne: null } },
+                groupField: '$insurance',
+            }
+        ];
+
         const groupedCounts = {};
 
-        for (const { _id, count } of result) {
-            const groupName = _id.groupName;
-            const monthKey = `${_id.year}-${String(_id.month).padStart(2, '0')}`;
+        const queries = groupBy ? types.filter(t => t.label === groupBy) : types;
 
-            if (!groupedCounts[groupName]) {
-                groupedCounts[groupName] = {};
+        for (const { match, groupField } of queries) {
+            const combinedMatch = { ...baseMatch, ...match };
+
+            const result = await CaseModel.aggregate([
+                { $match: combinedMatch },
+                {
+                    $group: {
+                        _id: {
+                            groupName: groupField,
+                            year: { $year: `$${dateField}` },
+                            month: { $month: `$${dateField}` }
+                        },
+                        count: { $sum: 1 }
+                    }
+                },
+                { $sort: { '_id.groupName': 1, '_id.year': 1, '_id.month': 1 } }
+            ]);
+
+            for (const { _id, count } of result) {
+                const groupName = _id.groupName;
+                const monthKey = `${_id.year}-${String(_id.month).padStart(2, '0')}`;
+
+                if (!groupedCounts[groupName]) {
+                    groupedCounts[groupName] = {};
+                }
+                groupedCounts[groupName][monthKey] = count;
             }
-            groupedCounts[groupName][monthKey] = count;
         }
 
-        // Step 3: Format response: fill missing months with 0
+        // Final formatting
         const finalResult = {};
         for (const groupName in groupedCounts) {
             finalResult[groupName] = monthKeys.map(month => groupedCounts[groupName][month] || 0);
@@ -102,6 +111,7 @@ class CaseStorage {
 
         return finalResult;
     }
+
 
     static async getClosedCaseCountsByUser(startDate, endDate) {
         const end = endDate ? new Date(endDate) : new Date();

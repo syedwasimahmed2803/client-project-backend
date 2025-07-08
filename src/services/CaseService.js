@@ -19,7 +19,7 @@ class CaseService {
   }
 
   static async addCase(data, user) {
-    const { patientName, insuranceType, insuranceId, hospital, remarks } = data;
+    const { patientName, insuranceType, insuranceId, hospital, hospitalId, remarks } = data;
 
     // Validate required fields
     const missingFields = [];
@@ -31,15 +31,30 @@ class CaseService {
     if (missingFields.length > 0) {
       throw new Error(`Missing required fields: ${missingFields.join(', ')}`);
     }
-    let insurerDoc;
+    let insurerDoc, hospitalDoc;
 
     if (insuranceType === 'clients') {
       insurerDoc = await ClientStorage.getClientById(insuranceId)
+      if (!insurerDoc) {
+        throw new Error(`Client with ID ${insuranceId} does not exist`);
+      }
     } else if (data.insuranceType === 'providers') {
       insurerDoc = await ProviderStorage.getHospitalById(insuranceId)
-    } else if (data.insuranceType === 'hospitals') {
-      insurerDoc = await HospitalStorage.getHospitalById(insuranceId)
+      if (!insurerDoc) {
+        throw new Error(`Provider with ID ${insuranceId} does not exist`);
+      }
+    } else {
+      throw new Error(`Invalid insuranceType: ${insuranceType}`);
     }
+
+    hospitalDoc = await HospitalStorage.getHospitalById(hospitalId)
+    if (!hospitalDoc) {
+      hospitalDoc = await ProviderStorage.getProviderById(hospitalId)
+      if (!hospitalDoc) {
+        throw new Error(`No hospital or provider found with ID ${hospitalId} and name ${hospital}`);
+      }
+    }
+
 
     const caseData = {
       ...data,
@@ -47,17 +62,19 @@ class CaseService {
       createdBy: user.name,
       region: insurerDoc.region,
       country: insurerDoc.country,
+      coverage: insurerDoc.coverage,
+      address: hospitalDoc.address,
       createdAt: Date(),
       updatedAt: Date(),
       ...(remarks && { remarkUser: user.name }),
       ...(remarks && { remarkUserRole: user.role }),
     };
 
-    return CaseStorage.validateAndCreateCase(caseData);
+    return CaseStorage.createCase(caseData);
   }
 
   static async updateCase(id, data) {
-    return CaseStorage.updateCase(id, {...data, updatedAt: Date()});
+    return CaseStorage.updateCase(id, { ...data, updatedAt: Date() });
   }
 
   static async deleteCase(id) {
@@ -70,8 +87,15 @@ class CaseService {
       if (!caseDoc) throw { status: 404, message: 'Case not found' };
       if (caseDoc.status === 'closed' || caseDoc.status === 'in-review') throw { status: 404, message: 'Case is already Closed or in-review' };
 
-      const hospitalDoc = await HospitalStorage.getHospitalById(caseDoc.hospitalId);
-      if (!hospitalDoc) throw { status: 404, message: 'Hospital not found' };
+      let hospitalDoc;
+
+      hospitalDoc = await HospitalStorage.getHospitalById(caseDoc.hospitalId)
+      if (!hospitalDoc) {
+        hospitalDoc = await ProviderStorage.getProviderById(caseDoc.hospitalId)
+        if (!hospitalDoc) {
+          throw new Error(`No hospital or provider found with ID ${caseDoc.hospitalId}`);
+        }
+      }
 
       const insurerDoc = await UtilityService.getInsurerByType(caseDoc.insuranceId, caseDoc.insuranceType);
       if (!insurerDoc) throw { status: 404, message: 'Insurance entity not found' };
@@ -97,12 +121,19 @@ class CaseService {
         status: 'pending',
         createdAt: caseDoc.createdAt,
         financeCreatedAt: Date(),
-        updatedAt: caseDoc.updatedAt
+        updatedAt: caseDoc.updatedAt,
+        caseRef: caseDoc.caseRef,
+        serviceType: caseDoc.serviceType,
+        caseFee: caseDoc.caseFee,
+        coverage: caseDoc.coverage,
+        address: caseDoc.address,
+        hospital: caseDoc.hospital,
+        hospitalId: caseDoc.hospitalId,
       };
 
       await FinanceStorage.createFinance(financeData);
 
-         // Update case
+      // Update case
       caseDoc.status = 'in-review';
       if (remark) {
         caseDoc.remarks = remark;

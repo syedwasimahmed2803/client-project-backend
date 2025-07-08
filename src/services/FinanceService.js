@@ -73,7 +73,14 @@ class FinanceService {
         updatedByUser: user.name,
         createdAt: caseDoc.createdAt,
         updatedAt: caseDoc.updatedAt,
-        invoiceCreatedAt: Date.now()
+        invoiceCreatedAt: Date.now(),
+        caseRef: caseDoc.caseRef,
+        serviceType: caseDoc.serviceType,
+        caseFee: caseDoc.caseFee,
+        coverage: caseDoc.coverage,
+        address: caseDoc.address,
+        hospital: caseDoc.hospital,
+        hospitalId: caseDoc.hospitalId,
       });
 
 

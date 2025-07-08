@@ -1,9 +1,6 @@
 // src/utils/CaseUtils.js
 const CaseModel = require('../models/Case');
 const mongoose = require('mongoose');
-const ProviderModel = require('../models/Provider')
-const ClientModel = require('../models/Client')
-const HospitalModel = require('../models/Hospital')
 const logIssue = require('../utils/Logger');
 const { Types } = mongoose;
 
@@ -53,11 +50,6 @@ class CaseStorage {
         }
 
         const types = [
-            {
-                label: 'hospitals',
-                match: { insuranceType: 'hospitals', insurance: { $exists: true, $ne: null } },
-                groupField: '$hospital',
-            },
             {
                 label: 'clients',
                 match: { insuranceType: 'clients', insurance: { $exists: true, $ne: null } },
@@ -153,27 +145,8 @@ class CaseStorage {
         return CaseModel.findById(id).lean();
     }
 
-    static async validateAndCreateCase(data) {
+    static async createCase(data) {
         try {
-            let InsuranceModel;
-
-            if (data.insuranceType === 'clients') {
-                InsuranceModel = ClientModel;
-            } else if (data.insuranceType === 'providers') {
-                InsuranceModel = ProviderModel;
-            } else if (data.insuranceType === 'hospitals') {
-                InsuranceModel = HospitalModel;
-            }
-
-            const insuranceData = await InsuranceModel.exists({ _id: data.insuranceId });
-            if (!insuranceData) {
-                throw new Error(`${data.insuranceType} with provided ID does not exist`);
-            }
-
-            const hospitalData = await HospitalModel.exists({ _id: data.hospitalId });
-            if (!hospitalData) {
-                throw new Error('Hospital with provided ID does not exist');
-            }
             return CaseModel.create(data);
         } catch (error) {
             await logIssue('Issue in case creation', error.message, {
@@ -187,7 +160,7 @@ class CaseStorage {
         try {
             return CaseModel.findByIdAndUpdate(id, data, { new: true, runValidators: true }).lean();
         } catch (error) {
-            await logIssue('Issue in case creation', error.message, {
+            await logIssue('Issue in case updation', error.message, {
                 error
             });
             return error.message;
@@ -198,7 +171,7 @@ class CaseStorage {
         try {
             return CaseModel.findByIdAndDelete(id).lean();
         } catch (error) {
-            await logIssue('Issue in case creation', error.message, {
+            await logIssue('Issue in case deletion', error.message, {
                 error
             });
             return error.message;

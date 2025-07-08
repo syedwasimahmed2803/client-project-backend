@@ -2,9 +2,7 @@
 const mongoose = require('mongoose');
 
 const ProviderSchema = new mongoose.Schema({
-  name: { type: String, required: true, unique: true},
-  location: { type: String },
-  region: { type: String },
+  name: { type: String, required: true, unique: true },
   contacts: {
     primary: {
       name: { type: String },
@@ -19,7 +17,17 @@ const ProviderSchema = new mongoose.Schema({
       phone: { type: String }
     }
   },
-  caseFee: { type: Number },
+  serviceType: {
+    type: [Object],
+    required: true
+  },
+  coverage: {
+    type: [ String ],
+    required: true
+  },
+  region: { type: String },
+  country: { type: String },
+  address: { type: String },
   status: { type: String, enum: ['inactive', 'active'], default: 'active' }
 }, { timestamps: true });
 

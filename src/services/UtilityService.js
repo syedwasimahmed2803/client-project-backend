@@ -12,9 +12,9 @@ class UtilityService {
     ]);
 
     return {
-      providers: providers.map(p => ({ id: p._id, name: p.name })),
+      providers: providers.map(p => ({ id: p._id, name: p.name, serviceType: p.serviceType })),
       hospitals: hospitals.map(h => ({ id: h._id, name: h.name })),
-      clients: clients.map(c => ({ id: c._id, name: c.name }))
+      clients: clients.map(c => ({ id: c._id, name: c.name, serviceType: c.serviceType }))
     };
   }
 
@@ -25,11 +25,7 @@ class UtilityService {
     if(type === "clients"){
       return await ClientStorage.getClientById(id)
     }
-    if(type === "hospitals"){
-      return await HospitalStorage.getHospitalById(id)
-    }
   }
-
 }
 
 module.exports = UtilityService;

@@ -20,7 +20,7 @@ const HospitalSchema = new mongoose.Schema({
       phone: { type: String }
     }
   },
-  caseFee: { type: Number },
+  address: { type: String },
   status: { type: String, enum: ['active', 'inactive'], default: 'active' },
   relation: { type: String, enum: ['cash', 'cashless'], default: 'cash' }
 }, { timestamps: true });

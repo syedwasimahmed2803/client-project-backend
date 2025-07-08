@@ -67,7 +67,7 @@ const parseMongoError = require('../utils/Error');
  *                     type: string
  *                   insuranceType:
  *                     type: string
- *                     enum: [providers, clients, hospitals]
+ *                     enum: [providers, clients]
  *                   insuranceId:
  *                     type: string
  *                   hospital:
@@ -222,7 +222,7 @@ router.get('/monthly-entity-counts', authenticate, authorizeRoles('admin', 'empl
  *                 type: string
  *               insuranceType:
  *                 type: string
- *                 enum: [providers, clients, hospitals]
+ *                 enum: [providers, clients]
  *               insuranceId:
  *                 type: string
  *               hospital:
@@ -269,7 +269,7 @@ router.get('/monthly-entity-counts', authenticate, authorizeRoles('admin', 'empl
  *                   type: string
  *                 insuranceType:
  *                   type: string
- *                   enum: [providers, clients, hospitals]
+ *                   enum: [providers, clients]
  *                 insuranceId:
  *                   type: string
  *                 hospital:
@@ -349,7 +349,7 @@ router.post('/', authenticate, authorizeRoles('admin', 'employee'), async (req, 
  *                 type: string
  *               insuranceType:
  *                 type: string
- *                 enum: [providers, clients, hospitals]
+ *                 enum: [providers, clients]
  *               insuranceId:
  *                 type: string
  *               hospital:
@@ -396,7 +396,7 @@ router.post('/', authenticate, authorizeRoles('admin', 'employee'), async (req, 
  *                   type: string
  *                 insuranceType:
  *                   type: string
- *                   enum: [providers, clients, hospitals]
+ *                   enum: [providers, clients]
  *                 insuranceId:
  *                   type: string
  *                 hospital:

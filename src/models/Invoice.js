@@ -2,11 +2,11 @@ const mongoose = require('mongoose');
 const { Schema, Types } = mongoose;
 
 const InvoiceSchema = new Schema({
-  caseId:{ type: Types.ObjectId, required: true },
-  financeId:{ type: Types.ObjectId, required: true },
+  caseId: { type: Types.ObjectId, required: true },
+  financeId: { type: Types.ObjectId, required: true },
   insuranceReference: { type: String, required: true, unique: true },
   insurance: { type: String },
-  insuranceType: { type: String, enum: ['clients', 'providers', 'hospitals']},
+  insuranceType: { type: String, enum: ['clients', 'providers'] },
   patientName: { type: String },
   claimAmount: { type: Number, required: true },
   caseFee: { type: Number, required: true },
@@ -17,6 +17,17 @@ const InvoiceSchema = new Schema({
   region: { type: String },
   country: { type: String },
   dueDate: { type: Date },
+  paidDate: { type: Date },
+  caseRef: { type: String, required: true, unique: true },
+  serviceType: { type: String },
+  caseFee: { type: Number, required: true },
+  coverage: {
+    type: [ String ],
+    required: true
+  },
+  address: { type: String },
+  hospital: { type: String, required: true },
+  hospitalId: { type: Types.ObjectId, required: true },
   invoiceCreatedAt: { type: Date },
   status: { type: String, enum: ['paid', 'pending', 'unpaid'], default: 'pending' },
   createdById: { type: Types.ObjectId, ref: 'User', required: true },

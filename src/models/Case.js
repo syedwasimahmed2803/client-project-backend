@@ -4,11 +4,19 @@ const { Schema, Types } = mongoose;
 const CaseSchema = new Schema({
   patientName: { type: String, required: true },
   insuranceReference: { type: String, required: true, unique: true  },
+  caseRef: { type: String, required: true, unique: true  },
+  serviceType: { type: String },
+  caseFee: { type: Number , required: true },
+  coverage: {
+    type: [ String ],
+    required: true
+  },
+  address: { type: String },
   insurance: { type: String },
-  insuranceType: { type: String, enum: ['clients', 'providers', 'hospitals'], required: true },
+  insuranceType: { type: String, enum: ['clients', 'providers'], required: true },
   insuranceId: { type: Types.ObjectId, required: true, refPath: 'insuranceType' },
   hospital: { type: String, required: true },
-  hospitalId: { type: Types.ObjectId, ref: 'Hospital', required: true },
+  hospitalId: { type: Types.ObjectId, required: true },
   remarkUser: { type: String },
   remarkUserRole: { type: String, enum: ['admin', 'employee'] },
   createdById: { type: Types.ObjectId, ref: 'User', required: true },

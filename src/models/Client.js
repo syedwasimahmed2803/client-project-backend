@@ -5,21 +5,28 @@ const ClientSchema = new mongoose.Schema({
   name: { type: String, required: true, unique: true },
   contacts: {
     primary: {
-      name:        { type: String, required: true },
-      email:       { type: String, required: true },
+      name: { type: String, required: true },
+      email: { type: String, required: true },
       designation: { type: String },
-      phone:       { type: String }
+      phone: { type: String }
     },
     secondary: {
-      name:        { type: String },
-      email:       { type: String },
+      name: { type: String },
+      email: { type: String },
       designation: { type: String },
-      phone:       { type: String }
+      phone: { type: String }
     }
   },
-  region:  { type: String },
-  country:  { type: String },
-  caseFee: { type: Number },
+  region: { type: String },
+  serviceType: {
+    type: [Object],
+    required: true
+  },
+  coverage: {
+    type: [ String ],
+    required: true
+  },
+  country: { type: String },
   status: { type: String, enum: ['active', 'inactive'], default: 'active' }
 }, { timestamps: true });
 

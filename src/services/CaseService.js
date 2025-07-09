@@ -64,8 +64,8 @@ class CaseService {
       country: insurerDoc.country,
       coverage: insurerDoc.coverage,
       address: hospitalDoc.address,
-      createdAt: Date(),
-      updatedAt: Date(),
+      createdAt: new Date(),
+      updatedAt: new Date(),
       ...(remarks && { remarkUser: user.name }),
       ...(remarks && { remarkUserRole: user.role }),
     };
@@ -74,7 +74,7 @@ class CaseService {
   }
 
   static async updateCase(id, data) {
-    return CaseStorage.updateCase(id, { ...data, updatedAt: Date() });
+    return CaseStorage.updateCase(id, { ...data, updatedAt: new Date() });
   }
 
   static async deleteCase(id) {
@@ -108,7 +108,7 @@ class CaseService {
         patientName: caseDoc.patientName,
         claimAmount: caseDoc.claimAmount,
         caseFee: insurerDoc.caseFee,
-        issueDate: Date(),
+        issueDate: new Date(),
         dueDate: null,
         remarks: caseDoc.remarks,
         remarkUser: caseDoc.remarkUser,
@@ -120,7 +120,7 @@ class CaseService {
         createdById: user.id,
         status: 'pending',
         createdAt: caseDoc.createdAt,
-        financeCreatedAt: Date(),
+        financeCreatedAt: new Date(),
         updatedAt: caseDoc.updatedAt,
         caseRef: caseDoc.caseRef,
         serviceType: caseDoc.serviceType,

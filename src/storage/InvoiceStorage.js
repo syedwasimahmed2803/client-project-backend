@@ -20,18 +20,27 @@ class InvoiceStorage {
   }
 
   static async updateInvoiceStatus(id, status, user) {
+    const update = {
+      status,
+      updatedByUser: user.name
+    };
+
+    if (status === 'paid') {
+      update.paidDate =  new Date();
+    } else {
+      update.$unset = { paidDate: '' }; // Removes the field
+    }
+
     return InvoiceModel.findByIdAndUpdate(
       id,
-      {
-        status,
-        updatedByUser: user.name
-      },
+      update,
       {
         new: true,
         runValidators: true
       }
     ).lean();
   }
+
 }
 
 module.exports = InvoiceStorage;

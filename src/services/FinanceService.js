@@ -90,7 +90,7 @@ class FinanceService {
 
       caseDoc.status = 'closed'
       caseDoc.approvedBy = user.name;
-      caseDoc.closedAt = Date();
+      caseDoc.closedAt = new Date();
       await CaseStorage.updateCase(caseDoc._id, caseDoc)
 
       return invoiceDoc;

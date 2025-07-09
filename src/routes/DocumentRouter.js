@@ -1,7 +1,6 @@
 
 const express = require('express');
 const router = express.Router();
-const express = require('express');
 const multer = require('multer');
 const DocumentService = require('../services/DocumentService');
 

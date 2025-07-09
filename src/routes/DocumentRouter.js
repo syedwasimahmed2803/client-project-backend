@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const DocumentService = require('../services/DocumentService');
+const path = require('path');
 
 const uploadsDir = process.env.UPLOADS_DIR || path.join(__dirname, '../storage/documents');
 

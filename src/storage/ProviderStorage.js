@@ -34,7 +34,15 @@ class ProviderStorage {
   }
 
   static async deleteProvider(id) {
-    return ProviderModel.findByIdAndDelete(id).lean();
+     const activeCasesCount = await CaseStorage.getActiveCasesCountForEntities('providers', id);
+    if (activeCasesCount > 0) {
+      throw new Error('Cannot delete provider: active cases are associated with this client.');
+    }
+    const deletedProvider = await ProviderModel.findByIdAndDelete(id).lean();
+    if (!deletedProvider) {
+      throw new Error('Provider not found or already deleted.');
+    }
+    return deletedProvider;
   }
 }
 

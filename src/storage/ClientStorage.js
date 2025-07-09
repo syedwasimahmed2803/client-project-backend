@@ -29,14 +29,22 @@ class ClientStorage {
 
   static async updateClient(id, updateData) {
     return ClientModel.findByIdAndUpdate(
-      id, 
-      updateData, 
+      id,
+      updateData,
       { new: true, runValidators: true }
     ).lean();
   }
 
   static async deleteClient(id) {
-    return ClientModel.findByIdAndDelete(id).lean();
+    const activeCasesCount = await CaseStorage.getActiveCasesCountForEntities('clients', id);
+    if (activeCasesCount > 0) {
+      throw new Error('Cannot delete client: active cases are associated with this client.');
+    }
+    const deletedClient = await ClientModel.findByIdAndDelete(id).lean();
+    if (!deletedClient) {
+      throw new Error('Client not found or already deleted.');
+    }
+    return deletedClient;
   }
 }
 

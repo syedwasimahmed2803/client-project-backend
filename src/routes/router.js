@@ -9,7 +9,9 @@ const AuthRouter = require('./AuthRouter');
 const CaseRouter = require('./CaseRouter');
 const FinanceRouter = require('./FinanceRouter');
 const InvoiceRouter = require('./InvoiceRouter');
+const DocumentRouter = require('./DocumentRouter');
 
+router.use('/documents', DocumentRouter);
 router.use('/invoices', InvoiceRouter);
 router.use('/finances', FinanceRouter);
 router.use('/cases', CaseRouter);

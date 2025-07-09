@@ -33,7 +33,7 @@ class HospitalStorage {
   }
 
   static async deleteHospital(id) {
-      const activeCasesCount = await CaseStorage.getActiveCasesCountForEntities('hospitals', id);
+      const activeCasesCount = await CaseStorage.getActiveCasesCountForEntities('hospitals', [id]);
     if (activeCasesCount > 0) {
       throw new Error('Cannot delete hospital: active cases are associated with this client.');
     }

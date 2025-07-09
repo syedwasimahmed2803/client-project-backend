@@ -34,7 +34,7 @@ class ProviderStorage {
   }
 
   static async deleteProvider(id) {
-     const activeCasesCount = await CaseStorage.getActiveCasesCountForEntities('providers', id);
+     const activeCasesCount = await CaseStorage.getActiveCasesCountForEntities('providers', [id]);
     if (activeCasesCount > 0) {
       throw new Error('Cannot delete provider: active cases are associated with this client.');
     }

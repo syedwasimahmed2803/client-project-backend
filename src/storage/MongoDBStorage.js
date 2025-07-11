@@ -37,7 +37,8 @@ class MongoDBStorage {
         'finances',
         'invoices',
         'log',
-        'providers'
+        'providers',
+        'counter'
       ];
   
       for (const name of collectionNames) {

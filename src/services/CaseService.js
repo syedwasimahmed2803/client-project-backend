@@ -4,6 +4,7 @@ const ClientStorage = require('../storage/ClientStorage');
 const ProviderStorage = require('../storage/ProviderStorage');
 const FinanceStorage = require('../storage/FinanceStorage');
 const UtilityService = require('./UtilityService')
+const CounterStorage = require('../storage/CounterStorage');
 
 class CaseService {
   static async getCases(status, startDate, endDate, user) {
@@ -54,10 +55,11 @@ class CaseService {
         throw new Error(`No hospital or provider found with ID ${hospitalId} and name ${hospital}`);
       }
     }
-
+    const caseRef = await CounterStorage.getMonthlyCaseSequence();
 
     const caseData = {
       ...data,
+      caseRef,
       createdById: user.id,
       createdBy: user.name,
       region: insurerDoc.region,

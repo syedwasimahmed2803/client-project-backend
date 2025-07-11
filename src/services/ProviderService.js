@@ -18,12 +18,12 @@ class ProviderService {
       throw new Error('Provider with this name already exists');
     }
 
-    await UtilityService.validateServiceType(clientData.serviceType)
+    await UtilityService.validateServiceType(data.serviceType)
 
     return ProviderStorage.createProvider(data);
   }
   static async updateProvider(id, data) {
-    await UtilityService.validateServiceType(clientData.serviceType)
+    await UtilityService.validateServiceType(data.serviceType)
 
     return ProviderStorage.updateProvider(id, data);
   }

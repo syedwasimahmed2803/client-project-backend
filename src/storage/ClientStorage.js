@@ -37,7 +37,7 @@ class ClientStorage {
 
   static async deleteClient(id) {
     const activeCasesCount = await CaseStorage.getActiveCasesCountForEntities('clients', [id]);
-    if (activeCasesCount > 0) {
+    if (Object.keys(activeCasesCount).length > 0) {
       throw new Error('Cannot delete client: active cases are associated with this client.');
     }
     const deletedClient = await ClientModel.findByIdAndDelete(id).lean();

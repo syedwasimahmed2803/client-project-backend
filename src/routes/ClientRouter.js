@@ -203,7 +203,7 @@ router.delete('/:id', authenticate, authorizeRoles('admin'), async (req, res) =>
     }
     res.json({ message: 'Client deleted successfully' });
   } catch (error) {
-    res.status(500).json({ error: 'Failed to delete client' });
+  res.status(500).json({ error: error.message || 'Failed to delete client' });
   }
 });
 

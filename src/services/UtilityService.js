@@ -19,11 +19,24 @@ class UtilityService {
   }
 
   static async getInsurerByType(id, type) {
-    if(type === "providers"){
+    if (type === "providers") {
       return await ProviderStorage.getProviderById(id)
     }
-    if(type === "clients"){
+    if (type === "clients") {
       return await ClientStorage.getClientById(id)
+    }
+  }
+
+  static validateServiceType(serviceType) {
+    if (!Array.isArray(serviceType)) {
+      throw new Error('serviceType must be an array');
+    }
+
+    const keys = serviceType.map((item) => Object.keys(item)[0]);
+    const uniqueKeys = new Set(keys);
+
+    if (keys.length !== uniqueKeys.size) {
+      throw new Error('Duplicate keys found in serviceType');
     }
   }
 }

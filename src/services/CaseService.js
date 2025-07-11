@@ -40,7 +40,7 @@ class CaseService {
         throw new Error(`Client with ID ${insuranceId} does not exist`);
       }
     } else if (data.insuranceType === 'providers') {
-      insurerDoc = await ProviderStorage.getHospitalById(insuranceId)
+      insurerDoc = await ProviderStorage.getProviderById(insuranceId)
       if (!insurerDoc) {
         throw new Error(`Provider with ID ${insuranceId} does not exist`);
       }

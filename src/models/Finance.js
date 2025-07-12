@@ -14,6 +14,7 @@ const FinanceSchema = new Schema({
   remarks: { type: String },
   remarkUser: { type: String },
   remarkUserRole: { type: String, enum: ['admin', 'employee'] },
+  supervisor: { type: Boolean },
   region: { type: String },
   country: { type: String },
   status: { type: String, enum: ['approve', 'reject', 'pending'], default: null },

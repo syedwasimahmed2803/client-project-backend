@@ -13,6 +13,7 @@ const InvoiceSchema = new Schema({
   remarks: { type: String },
   remarkUser: { type: String },
   remarkUserRole: { type: String, enum: ['admin', 'employee'] },
+  supervisor: { type: Boolean },
   issueDate: { type: Date },
   region: { type: String },
   country: { type: String },

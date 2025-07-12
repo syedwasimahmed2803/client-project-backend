@@ -3,12 +3,12 @@ const { Schema, Types } = mongoose;
 
 const CaseSchema = new Schema({
   patientName: { type: String, required: true },
-  insuranceReference: { type: String, required: true, unique: true  },
-  caseRef: { type: String, required: true, unique: true  },
+  insuranceReference: { type: String, required: true, unique: true },
+  caseRef: { type: String, required: true, unique: true },
   serviceType: { type: String },
-  caseFee: { type: Number , required: true },
+  caseFee: { type: Number, required: true },
   coverage: {
-    type: [ String ],
+    type: [String],
     required: true
   },
   address: { type: String },
@@ -19,11 +19,12 @@ const CaseSchema = new Schema({
   hospitalId: { type: Types.ObjectId, required: true },
   remarkUser: { type: String },
   remarkUserRole: { type: String, enum: ['admin', 'employee'] },
+  supervisor: { type: Boolean },
   createdById: { type: Types.ObjectId, ref: 'User', required: true },
   createdBy: { type: String },
   approvedBy: { type: String },
   rejectedBy: { type: String },
-  claimAmount: { type: Number , required: true },
+  claimAmount: { type: Number, required: true },
   assistanceDate: { type: Date },
   remarks: { type: String },
   invoiceStatus: { type: String, enum: ['completed', 'pending'], default: 'pending' },

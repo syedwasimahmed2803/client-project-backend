@@ -43,6 +43,7 @@ class FinanceService {
         caseDoc.remarks = remark;
         caseDoc.remarkUser = user.name;
         caseDoc.remarkUserRole = user.role;
+        caseDoc.supervisor = user?.supervisor;
       }
       await CaseStorage.updateCase(caseDoc._id, caseDoc);
       await FinanceStorage.deleteFinance(financeId);
@@ -66,6 +67,7 @@ class FinanceService {
         remarks: financeDoc.remarks,
         remarkUser: financeDoc.remarkUser,
         remarkUserRole: financeDoc.remarkUserRole,
+        supervisor: financeDoc?.supervisor,
         caseId: financeDoc.caseId,
         region: financeDoc.region,
         country: financeDoc.country,

@@ -70,6 +70,7 @@ class CaseService {
       updatedAt: new Date(),
       ...(remarks && { remarkUser: user.name }),
       ...(remarks && { remarkUserRole: user.role }),
+      ...(remarks && { supervisor: user?.supervisor }),
     };
 
     return CaseStorage.createCase(caseData);
@@ -113,8 +114,9 @@ class CaseService {
         issueDate: new Date(),
         dueDate: null,
         remarks: caseDoc.remarks,
-        remarkUser: caseDoc.remarkUser,
-        remarkUserRole: caseDoc.remarkUserRole,
+        remarkUser: user.name,
+        remarkUserRole: user.role,
+        supervisor: user?.supervisor,
         caseId: caseDoc._id,
         region: caseDoc.region,
         country: caseDoc.country,
@@ -141,6 +143,7 @@ class CaseService {
         caseDoc.remarks = remark;
         caseDoc.remarkUser = user.name;
         caseDoc.remarkUserRole = user.role;
+        caseDoc.supervisor = user?.supervisor;
       }
       await CaseStorage.updateCase(caseId, caseDoc);
       return caseDoc;

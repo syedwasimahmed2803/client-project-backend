@@ -113,7 +113,7 @@ class CaseService {
         caseFee: insurerDoc.caseFee,
         issueDate: new Date(),
         dueDate: null,
-        remarks: caseDoc.remarks,
+        remarks: remark,
         remarkUser: user.name,
         remarkUserRole: user.role,
         supervisor: user?.supervisor,

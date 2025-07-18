@@ -16,6 +16,7 @@ const FinanceSchema = new Schema({
   remarkUserRole: { type: String, enum: ['admin', 'employee'] },
   supervisor: { type: Boolean },
   region: { type: String },
+  assistanceDate: { type: Date },
   country: { type: String },
   status: { type: String, enum: ['approve', 'reject', 'pending'], default: null },
   createdById: { type: Types.ObjectId, ref: 'User', required: true },
@@ -23,7 +24,7 @@ const FinanceSchema = new Schema({
   serviceType: { type: String },
   caseFee: { type: Number, required: true },
   coverage: {
-    type: [ String ],
+    type: [String],
     required: true
   },
   address: { type: String },

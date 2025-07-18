@@ -15,6 +15,7 @@ const InvoiceSchema = new Schema({
   remarkUserRole: { type: String, enum: ['admin', 'employee'] },
   supervisor: { type: Boolean },
   issueDate: { type: Date },
+  assistanceDate: { type: Date },
   region: { type: String },
   country: { type: String },
   dueDate: { type: Date },
@@ -23,7 +24,7 @@ const InvoiceSchema = new Schema({
   serviceType: { type: String },
   caseFee: { type: Number, required: true },
   coverage: {
-    type: [ String ],
+    type: [String],
     required: true
   },
   address: { type: String },

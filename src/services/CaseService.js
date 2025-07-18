@@ -117,6 +117,7 @@ class CaseService {
         remarkUser: user.name,
         remarkUserRole: user.role,
         supervisor: user?.supervisor,
+        assistanceDate: caseDoc.assistanceDate,
         caseId: caseDoc._id,
         region: caseDoc.region,
         country: caseDoc.country,

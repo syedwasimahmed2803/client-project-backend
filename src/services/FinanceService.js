@@ -68,6 +68,7 @@ class FinanceService {
         remarkUser: financeDoc.remarkUser,
         remarkUserRole: financeDoc.remarkUserRole,
         supervisor: financeDoc?.supervisor,
+        assistanceDate: financeDoc.assistanceDate,
         caseId: financeDoc.caseId,
         region: financeDoc.region,
         country: financeDoc.country,

@@ -8,7 +8,8 @@ const TransactionSchema = new mongoose.Schema({
   category: { type: String, required: true },  // 3 -> category
   remarks: { type: String },                   // 4 -> remarks
   dateCreated: { type: Date, default: Date.now }, // 5 -> date created
-  createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }, // 6 -> created by
+  createdById: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }, // 6 -> created by
+  createdBy: { type: String, required: true }, // 6 -> created by name
   paymentMethod: {
     type: String,
     enum: ['card', 'cash', 'others'],

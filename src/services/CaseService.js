@@ -39,11 +39,19 @@ class CaseService {
       if (!insurerDoc) {
         throw new Error(`Client with ID ${insuranceId} does not exist`);
       }
+      const { id, ...clientUpdateData } = insurerDoc;
+      clientUpdateData.lastCaseCreatedDate = new Date();
+
+      await ClientStorage.updateClient(id, clientUpdateData);
     } else if (data.insuranceType === 'providers') {
       insurerDoc = await ProviderStorage.getProviderById(insuranceId)
       if (!insurerDoc) {
         throw new Error(`Provider with ID ${insuranceId} does not exist`);
       }
+       const { id, ...providerUpdateData } = insurerDoc;
+      providerUpdateData.lastCaseCreatedDate = new Date();
+
+      await ProviderStorage.updateProvider(id, providerUpdateData);
     } else {
       throw new Error(`Invalid insuranceType: ${insuranceType}`);
     }
@@ -66,12 +74,15 @@ class CaseService {
       country: insurerDoc.country,
       coverage: insurerDoc.coverage,
       address: hospitalDoc.address,
+      insurerBankDetails: insurerDoc.bankDetails || {},
+      hospitalBankDetails: hospitalDoc.bankDetails || {},
       createdAt: new Date(),
       updatedAt: new Date(),
       ...(remarks && { remarkUser: user.name }),
       ...(remarks && { remarkUserRole: user.role }),
       ...(remarks && { supervisor: user?.supervisor }),
     };
+
 
     return CaseStorage.createCase(caseData);
   }
@@ -134,6 +145,8 @@ class CaseService {
         address: caseDoc.address,
         hospital: caseDoc.hospital,
         hospitalId: caseDoc.hospitalId,
+        hospitalBankDetails: caseDoc.hospitalBankDetails || {},
+        insurerBankDetails: caseDoc.insurerBankDetails || {},
       };
 
       await FinanceStorage.createFinance(financeData);

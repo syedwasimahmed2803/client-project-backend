@@ -10,11 +10,13 @@ const CaseRouter = require('./CaseRouter');
 const FinanceRouter = require('./FinanceRouter');
 const InvoiceRouter = require('./InvoiceRouter');
 const DocumentRouter = require('./DocumentRouter');
+const TransactionRouter = require('./TransactionRouter');
 
 router.use('/documents', DocumentRouter);
 router.use('/invoices', InvoiceRouter);
 router.use('/finances', FinanceRouter);
 router.use('/cases', CaseRouter);
+router.use('/transactions', TransactionRouter);
 router.use('/clients', ClientRouter);
 router.use('/providers', ProviderRouter);
 router.use('/hospitals', HospitalRouter);

@@ -18,15 +18,17 @@ const ClientSchema = new mongoose.Schema({
     }
   },
   region: { type: String },
+  lastCaseCreatedDate: { type: Date },
   serviceType: {
     type: [Object],
     required: true
   },
   coverage: {
-    type: [ String ],
+    type: [String],
     required: true
   },
   country: { type: String },
+  address: { type: String },
   status: { type: String, enum: ['active', 'inactive'], default: 'active' }
 }, { timestamps: true });
 

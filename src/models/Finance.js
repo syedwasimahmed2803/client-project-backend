@@ -21,6 +21,8 @@ const FinanceSchema = new Schema({
   status: { type: String, enum: ['approve', 'reject', 'pending'], default: null },
   createdById: { type: Types.ObjectId, ref: 'User', required: true },
   caseRef: { type: String, required: true, unique: true },
+  hospitalBankDetails: { type: [Object] },
+  insurerBankDetails: { type: [Object] },
   serviceType: { type: String },
   caseFee: { type: Number, required: true },
   coverage: {

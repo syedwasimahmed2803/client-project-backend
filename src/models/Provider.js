@@ -26,8 +26,10 @@ const ProviderSchema = new mongoose.Schema({
     required: true
   },
   region: { type: String },
+  lastCaseCreatedDate: { type: Date },
   country: { type: String },
   address: { type: String },
+  bankDetails: { type: [Object] },
   status: { type: String, enum: ['inactive', 'active'], default: 'active' }
 }, { timestamps: true });
 

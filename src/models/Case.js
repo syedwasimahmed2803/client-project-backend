@@ -35,6 +35,8 @@ const CaseSchema = new Schema({
   createdAt: { type: Date },
   updatedAt: { type: Date },
   closedAt: { type: Date, default: null },
+  hospitalBankDetails: { type: [Object] },
+  insurerBankDetails: { type: [Object] },
 });
 
 const Case = mongoose.model('Case', CaseSchema);

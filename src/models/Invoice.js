@@ -21,6 +21,9 @@ const InvoiceSchema = new Schema({
   dueDate: { type: Date },
   paidDate: { type: Date },
   caseRef: { type: String, required: true, unique: true },
+  invoiceNo: { type: String},
+  hospitalBankDetails: { type: [Object] },
+  insurerBankDetails: { type: [Object] },
   serviceType: { type: String },
   caseFee: { type: Number, required: true },
   coverage: {

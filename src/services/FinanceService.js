@@ -78,12 +78,15 @@ class FinanceService {
         updatedAt: caseDoc.updatedAt,
         invoiceCreatedAt: Date.now(),
         caseRef: caseDoc.caseRef,
+        invoiceNo: financeDoc.caseRef,
         serviceType: caseDoc.serviceType,
         caseFee: caseDoc.caseFee,
         coverage: caseDoc.coverage,
         address: caseDoc.address,
         hospital: caseDoc.hospital,
         hospitalId: caseDoc.hospitalId,
+        hospitalBankDetails: financeDoc.hospitalBankDetails || {},
+        insurerBankDetails: financeDoc.insurerBankDetails || {},
       });
 
 

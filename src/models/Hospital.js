@@ -21,8 +21,10 @@ const HospitalSchema = new mongoose.Schema({
     }
   },
   address: { type: String },
+  bankDetails: { type: [Object] },
   status: { type: String, enum: ['active', 'inactive'], default: 'active' },
-  relation: { type: String, enum: ['cash', 'cashless'], default: 'cash' }
+  relation: { type: String, enum: ['cash', 'cashless'], default: 'cash' },
+  claimAmount: { type: Number },
 }, { timestamps: true });
 
 const Hospital = mongoose.model('Hospital', HospitalSchema);

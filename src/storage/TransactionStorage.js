@@ -25,6 +25,14 @@ class TransactionStorage {
     const transaction = new TransactionModel(data);
     return transaction.save();
   }
+
+   static async deleteTransaction(id) {
+    const deleteTransaction = await TransactionModel.findByIdAndDelete(id).lean();
+    if (!deleteTransaction) {
+      throw new Error('Provider not found or already deleted.');
+    }
+    return deleteTransaction;
+  }
 }
 
 module.exports = TransactionStorage;

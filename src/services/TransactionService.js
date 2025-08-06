@@ -9,6 +9,10 @@ class TransactionService {
   static async createTransaction(data) {
     return TransactionStorage.createTransaction(data);
   }
+
+   static async deleteTransaction(id) {
+    return TransactionStorage.deleteTransaction(id);
+  }
 }
 
 module.exports = TransactionService;

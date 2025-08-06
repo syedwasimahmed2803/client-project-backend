@@ -10,6 +10,8 @@ const TransactionSchema = new mongoose.Schema({
   dateCreated: { type: Date, default: Date.now }, // 5 -> date created
   createdById: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }, // 6 -> created by
   createdBy: { type: String, required: true }, // 6 -> created by name
+  companyName: { type: String },
+  currency: { type: String },
   paymentMethod: {
     type: String,
     enum: ['card', 'cash', 'others'],

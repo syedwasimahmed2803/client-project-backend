@@ -39,7 +39,9 @@ const InvoiceSchema = new Schema({
   updatedByUser: { type: String },
   createdBy: { type: String },
   createdAt: { type: Date },
-  updatedAt: { type: Date }
+  updatedAt: { type: Date },
+  internalAmount: { type: Number },  
+  currency: { type: String },
 });
 
 const Invoice = mongoose.model('Invoice', InvoiceSchema);

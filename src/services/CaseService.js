@@ -26,7 +26,6 @@ class CaseService {
     const missingFields = [];
     if (!patientName) missingFields.push('patientName');
     if (!insuranceType) missingFields.push('insuranceType');
-    if (!hospital) missingFields.push('hospital');
     if (!insuranceId) missingFields.push('insuranceId');
 
     if (missingFields.length > 0) {
@@ -39,19 +38,19 @@ class CaseService {
       if (!insurerDoc) {
         throw new Error(`Client with ID ${insuranceId} does not exist`);
       }
-      const { id, ...clientUpdateData } = insurerDoc;
+      const { _id, ...clientUpdateData } = insurerDoc;
       clientUpdateData.lastCaseCreatedDate = new Date();
 
-      await ClientStorage.updateClient(id, clientUpdateData);
+      await ClientStorage.updateClient(_id, clientUpdateData);
     } else if (data.insuranceType === 'providers') {
       insurerDoc = await ProviderStorage.getProviderById(insuranceId)
       if (!insurerDoc) {
         throw new Error(`Provider with ID ${insuranceId} does not exist`);
       }
-       const { id, ...providerUpdateData } = insurerDoc;
+       const { _id, ...providerUpdateData } = insurerDoc;
       providerUpdateData.lastCaseCreatedDate = new Date();
 
-      await ProviderStorage.updateProvider(id, providerUpdateData);
+      await ProviderStorage.updateProvider(_id, providerUpdateData);
     } else {
       throw new Error(`Invalid insuranceType: ${insuranceType}`);
     }
@@ -59,9 +58,6 @@ class CaseService {
     hospitalDoc = await HospitalStorage.getHospitalById(hospitalId)
     if (!hospitalDoc) {
       hospitalDoc = await ProviderStorage.getProviderById(hospitalId)
-      if (!hospitalDoc) {
-        throw new Error(`No hospital or provider found with ID ${hospitalId} and name ${hospital}`);
-      }
     }
     const caseRef = await CounterStorage.getMonthlyCaseSequence();
 
@@ -73,9 +69,9 @@ class CaseService {
       region: insurerDoc.region,
       country: insurerDoc.country,
       coverage: insurerDoc.coverage,
-      address: hospitalDoc.address,
+      address: hospitalDoc?.address,
       insurerBankDetails: insurerDoc.bankDetails || {},
-      hospitalBankDetails: hospitalDoc.bankDetails || {},
+      hospitalBankDetails: hospitalDoc?.bankDetails || {},
       createdAt: new Date(),
       updatedAt: new Date(),
       ...(remarks && { remarkUser: user.name }),
@@ -106,9 +102,6 @@ class CaseService {
       hospitalDoc = await HospitalStorage.getHospitalById(caseDoc.hospitalId)
       if (!hospitalDoc) {
         hospitalDoc = await ProviderStorage.getProviderById(caseDoc.hospitalId)
-        if (!hospitalDoc) {
-          throw new Error(`No hospital or provider found with ID ${caseDoc.hospitalId}`);
-        }
       }
 
       const insurerDoc = await UtilityService.getInsurerByType(caseDoc.insuranceId, caseDoc.insuranceType);
@@ -147,6 +140,8 @@ class CaseService {
         hospitalId: caseDoc.hospitalId,
         hospitalBankDetails: caseDoc.hospitalBankDetails || {},
         insurerBankDetails: caseDoc.insurerBankDetails || {},
+        internalAmout: caseDoc.internalAmout,
+        currency: caseDoc.currency
       };
 
       await FinanceStorage.createFinance(financeData);

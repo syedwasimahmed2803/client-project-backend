@@ -36,6 +36,8 @@ const FinanceSchema = new Schema({
   createdAt: { type: Date },
   updatedAt: { type: Date },
   createdBy: { type: String },
+  internalAmount: { type: Number },  
+  currency: { type: String },
 });
 
 const Finance = mongoose.model('Finance', FinanceSchema);

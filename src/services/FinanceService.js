@@ -87,6 +87,8 @@ class FinanceService {
         hospitalId: caseDoc.hospitalId,
         hospitalBankDetails: financeDoc.hospitalBankDetails || {},
         insurerBankDetails: financeDoc.insurerBankDetails || {},
+        internalAmount: financeDoc.internalAmount,
+        currency: financeDoc.currency
       });
 
 

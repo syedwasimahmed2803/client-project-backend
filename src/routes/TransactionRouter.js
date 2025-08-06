@@ -25,4 +25,16 @@ router.post('/', authenticate, authorizeRoles('admin', 'employee'), async (req, 
   }
 });
 
+router.delete('/:id', authenticate, authorizeRoles('admin'), async (req, res) => {
+  try {
+    const deletedTransaction = await TransactionService.deleteTransaction(req.params.id);
+    if (!deletedTransaction) {
+      return res.status(404).json({ error: 'Transaction not found' });
+    }
+    res.json({ message: 'Transaction deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to delete Transaction' });
+  }
+});
+
 module.exports = router;

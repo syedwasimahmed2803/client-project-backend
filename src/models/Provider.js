@@ -30,6 +30,7 @@ const ProviderSchema = new mongoose.Schema({
   country: { type: String },
   address: { type: String },
   bankDetails: { type: [Object] },
+  hospitalCaseFee: { type: Number},
   status: { type: String, enum: ['inactive', 'active'], default: 'active' }
 }, { timestamps: true });
 

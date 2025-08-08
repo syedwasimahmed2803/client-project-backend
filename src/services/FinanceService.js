@@ -83,6 +83,7 @@ class FinanceService {
         caseFee: caseDoc.caseFee,
         coverage: caseDoc.coverage,
         address: caseDoc.address,
+        hospitalCaseFee: caseDoc.hospitalCaseFee,
         hospital: caseDoc.hospital,
         hospitalId: caseDoc.hospitalId,
         hospitalBankDetails: financeDoc.hospitalBankDetails || {},

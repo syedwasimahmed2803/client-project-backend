@@ -37,6 +37,7 @@ const FinanceSchema = new Schema({
   updatedAt: { type: Date },
   createdBy: { type: String },
   internalAmount: { type: Number },  
+  hospitalCaseFee: { type: Number},
   currency: { type: String },
 });
 

@@ -27,6 +27,7 @@ const CaseSchema = new Schema({
   approvedBy: { type: String },
   rejectedBy: { type: String },
   claimAmount: { type: Number, required: true },
+  hospitalCaseFee: { type: Number},
   assistanceDate: { type: Date },
   remarks: { type: String },
   invoiceStatus: { type: String, enum: ['completed', 'pending'], default: 'pending' },

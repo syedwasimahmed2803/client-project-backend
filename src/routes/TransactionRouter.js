@@ -18,7 +18,7 @@ router.get('/', authenticate, authorizeRoles('admin', 'employee'), async (req, r
 
 router.post('/', authenticate, authorizeRoles('admin', 'employee'), async (req, res) => {
   try {
-    const transaction = await TransactionService.createTransaction(req.body);
+    const transaction = await TransactionService.createTransaction(req.user, req.body);
     res.status(201).json(transaction);
   } catch (error) {
     res.status(500).json({ error: 'Failed to create Transaction' });

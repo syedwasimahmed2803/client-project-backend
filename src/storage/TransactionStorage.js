@@ -1,10 +1,6 @@
 // src/storage/TransactionStorage.js
 const TransactionModel = require('../models/Transaction');
 class TransactionStorage {
-  static async createTransaction(data) {
-    const transaction = new TransactionModel(data);
-    return transaction.save();
-  }
 
   static async getAllTransactions(startDate, endDate, type) {
     const filter = {};
@@ -21,12 +17,18 @@ class TransactionStorage {
     return TransactionModel.find(filter).lean();
   }
 
-  static async createTransaction(data) {
-    const transaction = new TransactionModel(data);
+  static async createTransaction(user, data) {
+        const transactionData = {
+      ...data,
+      createdBy: user.name,
+      createdById: user.id,
+      createdByRole: user.role,
+    }
+    const transaction = new TransactionModel(transactionData);
     return transaction.save();
   }
 
-   static async deleteTransaction(id) {
+  static async deleteTransaction(id) {
     const deleteTransaction = await TransactionModel.findByIdAndDelete(id).lean();
     if (!deleteTransaction) {
       throw new Error('Provider not found or already deleted.');

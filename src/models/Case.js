@@ -26,7 +26,7 @@ const CaseSchema = new Schema({
   createdBy: { type: String },
   approvedBy: { type: String },
   rejectedBy: { type: String },
-  claimAmount: { type: Number, required: true },
+  claimAmount: { type: Number},
   hospitalCaseFee: { type: Number},
   assistanceDate: { type: Date },
   remarks: { type: String },

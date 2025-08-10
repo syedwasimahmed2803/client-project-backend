@@ -5,15 +5,17 @@ const logIssue = require('../utils/Logger');
 const { Types } = mongoose;
 
 class CaseStorage {
-    static async getAllCases(status, startDate, endDate, user) {
+    static async getAllCases(status, startDate, endDate, user, all) {
         const filter = {};
 
         if (status) {
             filter.status = status;
         }
 
-        if (user.role === 'employee') {
-            filter.createdById = user.id;
+        if (all !== 'true') {
+            if (user.role === 'employee') {
+                filter.createdById = user.id;
+            }
         }
 
         // Default date range: last 6 months

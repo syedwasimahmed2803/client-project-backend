@@ -7,8 +7,8 @@ const UtilityService = require('./UtilityService')
 const CounterStorage = require('../storage/CounterStorage');
 
 class CaseService {
-  static async getCases(status, startDate, endDate, user) {
-    return CaseStorage.getAllCases(status, startDate, endDate, user);
+  static async getCases(status, startDate, endDate, user, all) {
+    return CaseStorage.getAllCases(status, startDate, endDate, user, all);
   }
 
   static async getClosedCaseCountsByUser(startDate, endDate) {

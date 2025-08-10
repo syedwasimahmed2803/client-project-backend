@@ -104,9 +104,9 @@ const parseMongoError = require('../utils/Error');
 
 router.get('/', authenticate, authorizeRoles('admin', 'employee'), async (req, res) => {
   try {
-     let { startDate, endDate } = req.query;
+     let { startDate, endDate, all } = req.query;
     const user = req.user;
-    const cases = await CaseService.getCases(req.query.status, startDate, endDate, user);
+    const cases = await CaseService.getCases(req.query.status, startDate, endDate, user, all);
     res.json(cases);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch cases' });
@@ -581,7 +581,7 @@ router.put('/:id/in-review', authenticate, authorizeRoles('admin', 'employee'), 
  *       500:
  *         description: Failed to fetch closed case counts
  */
-router.get('/closed-case-count', authenticate, authorizeRoles('admin'), async (req, res) => {
+router.get('/closed-case-count', authenticate, authorizeRoles('admin', 'employee'), async (req, res) => {
   try {
     const { startDate, endDate } = req.query;
     const counts = await CaseService.getClosedCaseCountsByUser(startDate, endDate);

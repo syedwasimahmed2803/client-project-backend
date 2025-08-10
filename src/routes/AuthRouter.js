@@ -177,4 +177,13 @@ router.post('/change-password', async (req, res) => {
   }
 });
 
+router.post('/:id/delete', authenticate, authorizeRoles('admin'), async (req, res) => {
+  try {
+    await AuthService.deleteAccount(req.user, req.params.id);
+    res.json({ message: 'Account deleted successfully' });
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
 module.exports = router;

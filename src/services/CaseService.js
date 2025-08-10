@@ -144,7 +144,7 @@ class CaseService {
         hospitalId: caseDoc.hospitalId,
         hospitalBankDetails: caseDoc.hospitalBankDetails || {},
         insurerBankDetails: caseDoc.insurerBankDetails || {},
-        internalAmout: caseDoc.internalAmout,
+        internalAmount: caseDoc.internalAmount,
         currency: caseDoc.currency
       };
 

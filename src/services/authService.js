@@ -68,6 +68,17 @@ const AuthService = {
 
     const hashed = await bcrypt.hash(newPassword, 10);
     await UserStorage.updatePasswordById(user._id, hashed);
+  },
+
+    deleteAccount: async (adminUser, id) => {
+       if (adminUser.role !== 'admin') {
+      throw new Error('Unauthorized User');
+    }
+    const user = await UserStorage.findById(id);
+    if (!user) {
+      throw new Error('User not found');
+    }
+    const deletedUser = await UserStorage.deleteAccount(id);
   }
 
 };

@@ -70,15 +70,18 @@ const AuthService = {
     await UserStorage.updatePasswordById(user._id, hashed);
   },
 
-    deleteAccount: async (adminUser, id) => {
+    deleteAccount: async (adminUser, email) => {
        if (adminUser.role !== 'admin') {
       throw new Error('Unauthorized User');
     }
-    const user = await UserStorage.findById(id);
+    if(adminUser.email === email) {
+      throw new Error('You cannot delete your own account');
+    }
+    const user = await UserStorage.findByEmail(email);
     if (!user) {
       throw new Error('User not found');
     }
-    const deletedUser = await UserStorage.deleteAccount(id);
+     await UserStorage.deleteAccount(user._id);
   }
 
 };

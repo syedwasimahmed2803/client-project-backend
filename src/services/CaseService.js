@@ -47,17 +47,19 @@ class CaseService {
       if (!insurerDoc) {
         throw new Error(`Provider with ID ${insuranceId} does not exist`);
       }
-       const { _id, ...providerUpdateData } = insurerDoc;
+      const { _id, ...providerUpdateData } = insurerDoc;
       providerUpdateData.lastCaseCreatedDate = new Date();
 
       await ProviderStorage.updateProvider(_id, providerUpdateData);
     } else {
       throw new Error(`Invalid insuranceType: ${insuranceType}`);
     }
+    if (hospitalId) {
 
-    hospitalDoc = await HospitalStorage.getHospitalById(hospitalId)
-    if (!hospitalDoc) {
-      hospitalDoc = await ProviderStorage.getProviderById(hospitalId)
+      hospitalDoc = await HospitalStorage.getHospitalById(hospitalId)
+      if (!hospitalDoc) {
+        hospitalDoc = await ProviderStorage.getProviderById(hospitalId)
+      }
     }
     const caseRef = await CounterStorage.getMonthlyCaseSequence();
 

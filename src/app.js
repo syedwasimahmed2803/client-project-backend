@@ -21,12 +21,15 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
  * Serve React static files
  * Assuming your React build is in "client/build"
  */
-app.use(express.static(path.join(__dirname, 'client/build')));
+// ✅ Serve React build folder
+const buildPath = path.join(__dirname, 'client/build');
+if (require('fs').existsSync(buildPath)) {
+  app.use(express.static(buildPath));
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(buildPath, 'index.html'));
+  });
+}
 
-// Catch-all route to serve React's index.html
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
-});
 
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,

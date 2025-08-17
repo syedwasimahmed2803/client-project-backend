@@ -1,0 +1,7 @@
+MONGO_URI=mongodb+srv://
+PORT=3000
+TOKEN=
+JWT_SECRET=
+SMTP_USER=
+SMTP_PASS=
+UPLOADS_DIR=storage/documents

@@ -73,6 +73,7 @@ class FinanceService {
         region: financeDoc.region,
         country: financeDoc.country,
         financeId: financeDoc._id,
+        placeOfAssistance: financeDoc.placeOfAssistance,
         updatedByUser: user.name,
         createdAt: caseDoc.createdAt,
         updatedAt: caseDoc.updatedAt,

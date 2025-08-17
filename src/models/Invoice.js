@@ -42,6 +42,7 @@ const InvoiceSchema = new Schema({
   updatedAt: { type: Date },
   hospitalCaseFee: { type: Number},
   internalAmount: { type: Number },  
+  placeOfAssistance: { type: String },
   currency: { type: String },
 });
 

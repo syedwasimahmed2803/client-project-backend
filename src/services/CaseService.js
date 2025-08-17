@@ -127,6 +127,7 @@ class CaseService {
         assistanceDate: caseDoc.assistanceDate,
         caseId: caseDoc._id,
         region: caseDoc.region,
+        placeOfAssistance: caseDoc.placeOfAssistance,
         hospitalCaseFee: caseDoc.hospitalCaseFee,
         country: caseDoc.country,
         createdBy: user.name,

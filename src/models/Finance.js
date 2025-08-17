@@ -19,7 +19,7 @@ const FinanceSchema = new Schema({
   assistanceDate: { type: Date },
   country: { type: String },
   status: { type: String, enum: ['approve', 'reject', 'pending'], default: null },
-  createdById: { type: Types.ObjectId, ref: 'User', required: true },
+  createdById: { type: Types.ObjectId, ref: 'User' },
   caseRef: { type: String, required: true, unique: true },
   hospitalBankDetails: { type: [Object] },
   insurerBankDetails: { type: [Object] },
@@ -30,15 +30,15 @@ const FinanceSchema = new Schema({
     required: true
   },
   address: { type: String },
-  hospital: { type: String, required: true },
-  hospitalId: { type: Types.ObjectId, required: true },
+  hospital: { type: String },
+  hospitalId: { type: Types.ObjectId },
   financeCreatedAt: { type: Date },
   createdAt: { type: Date },
   updatedAt: { type: Date },
   createdBy: { type: String },
   internalAmount: { type: Number },  
   placeOfAssistance: { type: String },
-  hospitalCaseFee: { type: Number},
+  hospitalCaseFee: { type: Number },
   currency: { type: String },
 });
 

@@ -95,7 +95,6 @@ class CaseService {
   }
 
   static async closeCase(caseId, remark, user) {
-    try {
       let caseDoc = await CaseStorage.getCaseById(caseId);
       if (!caseDoc) throw { status: 404, message: 'Case not found' };
       if (caseDoc.status === 'closed' || caseDoc.status === 'in-review') throw { status: 404, message: 'Case is already Closed or in-review' };
@@ -161,9 +160,6 @@ class CaseService {
       }
       await CaseStorage.updateCase(caseId, caseDoc);
       return caseDoc;
-    } catch (error) {
-      return error;
-    }
   }
 }
 
